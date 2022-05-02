@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="error-suite.xml" />
+
+	<munit:test name="nationalRail-sys-api-main-APIKIT:BAD_REQUESTerror-test" doc:id="7e99578b-f636-411b-9863-2b838591bea3" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="f0afda31-525f-409b-b72b-f0fa3cc1286c" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44c3c503-2768-4733-a162-0736455116e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />		
+							
+					
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="fd349c71-640a-4afb-be9f-27d01ff39837" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="b74b280b-0c7a-47a3-8c11-c9a8dc52f61a" >
+				<flow-ref doc:name="Flow-ref to nationalRail-sys-api-main" doc:id="c182c984-d532-4442-a949-b6e2ac19f22a" name="nationalRail-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="89f08147-6175-47ba-a507-fb2df9801d3a" >
+						<logger level="INFO" doc:name="Logger" doc:id="68ed6aae-a2c5-42d6-9690-5286cb424260" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="3f0a9f3c-b14b-466a-a45a-7b1ce912e1a1" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+		
+</munit:validation>
+	</munit:test>
+
+	<munit:test name="nationalRail-sys-api-main-APIKIT:NOT_FOUNDerror-test" doc:id="5760af1e-3fe9-44e8-b079-1bb938465606" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="dbc7d07a-aee2-44b5-b1d5-a36b051cce54" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44c3c503-2768-4733-a162-0736455116e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="85409c7b-cb00-47fd-92e1-b5e1f934ec44" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="526ec421-5d3b-4610-a88a-e56200d32345" >
+				<flow-ref doc:name="Flow-ref to nationalRail-sys-api-main" doc:id="8682fb63-9e99-4ba3-9014-2ff6e4171064" name="nationalRail-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ce59d393-202c-49fd-ab81-0f108725aa5c" >
+						<logger level="INFO" doc:name="Logger" doc:id="e1565ac0-1fa4-4b3a-af2e-1d7520cb0d55" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="59e45179-25af-410b-9b81-bab321d6d8a8" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+		
+</munit:validation>
+	</munit:test>
+	
+	<munit:test name="nationalRail-sys-api-main-APIKIT:METHOD_NOT_ALLOWEDerror-test" doc:id="ca61ce96-4d5e-47df-97fc-ce88e36013f2" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="06a51ba5-9282-47e7-af71-a6ea33aff8d4" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44c3c503-2768-4733-a162-0736455116e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="84e01951-a97b-40e9-ab00-1941e1508ffe" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="cbe569ed-508d-4d93-bbbc-d0e27c87babd" >
+				<flow-ref doc:name="Flow-ref to nationalRail-sys-api-main" doc:id="d4ca9885-d2b1-41a7-ac1a-72cf59fa673d" name="nationalRail-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="de337e86-7a49-44e9-bebe-5516244c74eb" >
+						<logger level="INFO" doc:name="Logger" doc:id="0c716678-fd1b-49bc-b9e9-785e23bb9069" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="56eb9fce-f235-4d09-8aa6-917d92d35e54" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+		
+</munit:validation>
+	</munit:test>	
+
+	<munit:test name="nationalRail-sys-api-main-APIKIT:NOT_ACCEPTABLEerror-test" doc:id="21057c1f-e899-4bb9-b302-997a8694b7ce" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="cafab4d5-879b-4c66-8f07-8ae30a6ebfb1" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44c3c503-2768-4733-a162-0736455116e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="375b43d0-e81e-4ed8-bbe0-1d9be57af513" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="c57fe02d-abe5-497b-9a0d-b5c0260078ea" >
+				<flow-ref doc:name="Flow-ref to nationalRail-sys-api-main" doc:id="bb0a274b-30a1-468f-8f9f-3d1a9e125cb1" name="nationalRail-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6d59bce6-0ff8-4d37-bbd7-26c5cd4cc171" >
+						<logger level="INFO" doc:name="Logger" doc:id="c124edd4-ceba-4739-8410-ce4b9430d823" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="55eb317d-ff25-4d49-b033-7b6b22f6a339" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+		
+</munit:validation>
+	</munit:test>
+
+	<munit:test name="nationalRail-sys-api-main-APIKIT:UNSUPPORTED_MEDIA_TYPEerror-test" doc:id="860e77e7-b5a0-44c9-9cd3-d4e886f09c5f" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="ed310750-b6f7-4d41-b046-3815fbc903e6" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44c3c503-2768-4733-a162-0736455116e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="09603833-9b33-49a8-8a27-891ef8562a6d" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="4c35567c-0434-4c32-9153-1baec292eecc" >
+				<flow-ref doc:name="Flow-ref to nationalRail-sys-api-main" doc:id="06a3d2ac-e7d0-4e8f-bbd0-3bec7f0631ae" name="nationalRail-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9ab9254b-a96d-4d59-8f18-7fb1dfe66a33" >
+						<logger level="INFO" doc:name="Logger" doc:id="5aa826c4-825c-4cda-ad2d-63d5290bf698" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="5817fea2-3613-48dc-8435-23731e77a72e" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+		
+</munit:validation>
+	</munit:test>
+
+	<munit:test name="nationalRail-sys-api-main-APIKIT:NOT_IMPLEMENTEDerror-test" doc:id="782e7c7e-58a3-4774-9c2b-ded46010871c" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="897d338b-e87d-44d7-a02d-6545b1979365" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44c3c503-2768-4733-a162-0736455116e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="b88e4fa8-02fa-4fca-b809-d474fb4a72e6" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="ca1a77df-87bb-4e53-b5a3-1d987e0d6872" >
+				<flow-ref doc:name="Flow-ref to nationalRail-sys-api-main" doc:id="174e8162-fc07-442f-83fc-2b908fceb386" name="nationalRail-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="658e6584-7e8a-4598-bf6d-835185bf6899" >
+						<logger level="INFO" doc:name="Logger" doc:id="454215ce-16cd-4011-b587-d77e5f6c5903" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="c5d5ddb8-829b-4f68-91ee-32558a462c64" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+		
+</munit:validation>
+	</munit:test>
+
+	<munit:test name="nationalRail-sys-api-main-ANYerror-test" doc:id="ff3dd733-7df9-4fa1-a072-e5d1b193fd92" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="8d0b593f-d297-4497-b712-1eabd8b8fb20" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44c3c503-2768-4733-a162-0736455116e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="68117a81-6eaa-411b-8a1d-5d1e31f7254b" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="4bbf46cc-35ec-499a-b456-34993cadd070" >
+				<flow-ref doc:name="Flow-ref to nationalRail-sys-api-main" doc:id="4cef4884-5d62-4471-b6ae-3a2afef65a51" name="nationalRail-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="cee67e3b-1b2e-4f44-823f-49594b51e2c2" >
+						<logger level="INFO" doc:name="Logger" doc:id="000be9e3-54e5-45ed-b42d-09efd8bbd4cf" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ad440f45-8fc3-419e-879c-6fc26f5a5dd2" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+		
+</munit:validation>
+	</munit:test>
+
+</mule>

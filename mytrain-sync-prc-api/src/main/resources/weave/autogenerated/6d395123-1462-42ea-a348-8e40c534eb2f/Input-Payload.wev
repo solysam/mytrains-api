@@ -1,0 +1,10 @@
+%dw 2.0
+
+type auto_6d395123_1462_42ea_a348_8e40c534eb2f_Input_Payload = {
+  from: String, 
+  details: Array<{    STA: String,     reason: String,     ETA: String,     generated: String,     _?: Any  }>, 
+  to: String, 
+  subscriptionID: Number, 
+  _?: Any
+}
+

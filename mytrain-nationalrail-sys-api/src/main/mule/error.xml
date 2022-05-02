@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd">
+
+        <sub-flow name="ticket-subFlow" doc:id="f3d1f6fa-0656-4cf9-a3d4-8eb27e447f00" >
+		<ee:transform doc:name="error" doc:id="32825ff7-87ca-4f70-bd89-29175d6d0de7">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output text/plain
+---
+"API Name - " ++ Mule::p('logger.application.name') ++ "\n" ++
+"Error Details - " ++ error.errorType.namespace ++ ":" ++ error.errorType.identifier ++ "\n" ++ 
+"Description - " ++ error.detailedDescription]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		<ee:transform doc:name="ticket" doc:id="113af251-507f-4f14-85ac-bf670e12d271">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.service-now.com/incident
+---
+{
+	ns0#insert: {
+		short_description: payload,
+		state: "New"
+	}
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		<servicenow:invoke service="incident" operation="insert" doc:name="Generate ticket" doc:id="143ea625-b1e1-4906-99c0-766edf8fa597" config-ref="ServiceNow_Config" />
+		<ee:transform doc:name="incident logged" doc:id="acb6c518-b5e0-4819-9aef-ff568023ff41" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "servicenow ticket raised"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<error-handler name="globalError_Handler">
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+			<flow-ref doc:name="ticket-subFlow" doc:id="d1ecb4f9-a927-46fb-a65d-bf1e8794ef6b" name="ticket-subFlow" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+			<flow-ref doc:name="ticket-subFlow" doc:id="11484129-56b3-4ae9-8645-9efd70df0f56" name="ticket-subFlow" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+			<flow-ref doc:name="ticket-subFlow" doc:id="613d261e-7a28-49dd-9179-5533ecb9169e" name="ticket-subFlow" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+			<flow-ref doc:name="ticket-subFlow" doc:id="049773f3-014f-49b3-8677-d1049fa65a6f" name="ticket-subFlow" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<flow-ref doc:name="ticket-subFlow" doc:id="88a492a2-a70f-467e-a36e-847812d8d6d1" name="ticket-subFlow" />
+            
+</on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+			<flow-ref doc:name="ticket-subFlow" doc:id="3ebdcdfd-7946-42df-8ef0-903098173967" name="ticket-subFlow" />
+            
+</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1617c4b3-da2e-403c-9f13-b955a0d05908" type="ANY">
+			<flow-ref doc:name="ticket-subFlow" doc:id="783e5293-0eec-4bed-81e4-b2bf66ae61e1" name="ticket-subFlow" />
+		</on-error-propagate>
+        
+</error-handler>
+
+</mule>

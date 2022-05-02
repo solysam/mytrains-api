@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="error-suite.xml" />
+
+	<munit:test name="okta-sys-api-main-APIKIT:BAD_REQUESTerror-test" doc:id="5c04dc9b-bdc6-48f2-913a-00e4274ac465" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="8087f3f6-242b-4497-b384-56a1655500c4" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6045e6a6-8d7f-4422-aa20-d1cd9c392d52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="18cc892e-d16c-4d33-bc19-13a782ecf5ec" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://oktasysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="b88b8767-6a9e-4e87-97dc-ec6016f66cfb" >
+				<flow-ref doc:name="Flow-ref to okta-sys-api-main" doc:id="5f835c8c-6466-4550-aef8-06a549f51542" name="okta-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="91ab9aad-d35d-4287-b338-f44157d0d086" >
+						<logger level="INFO" doc:name="Logger" doc:id="edef4e01-c570-41e2-93d8-f4f1007b40ea" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="02c41582-c223-48dd-9207-c93fb5c147fc" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="okta-sys-api-main-APIKIT:NOT_FOUNDerror-test" doc:id="35c135ea-0457-44b3-b177-1ea030c70ae9" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="852671e8-542f-42c1-92c7-ec080f6ff23d" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6045e6a6-8d7f-4422-aa20-d1cd9c392d52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="139576f9-e16c-40fb-b63d-bf9d87a39254" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://oktasysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="9f3f3795-3bec-4e0b-b587-ce7e4017d994" >
+				<flow-ref doc:name="Flow-ref to okta-sys-api-main" doc:id="57174ed6-efdb-4f7c-8ede-3ffbfa1e74b3" name="okta-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d0481fc9-ae37-44b3-955c-1080027eeeb3" >
+						<logger level="INFO" doc:name="Logger" doc:id="a374a892-93ef-49ff-bde7-6ac30125fbd8" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="fb6098d1-d377-4acc-a299-1f6d5e80477d" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="okta-sys-api-main-APIKIT:METHOD_NOT_ALLOWEDerror-test" doc:id="029be7e4-a39d-4875-861f-7ecaf51f1be1" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="191ce221-b77e-48b1-b194-fb73f0839051" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6045e6a6-8d7f-4422-aa20-d1cd9c392d52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="ddb01d71-b3f2-4302-a8b6-b118119e7a6d" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://oktasysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="3ec5e2c2-7045-4d91-896a-f7063d27a2fa" >
+				<flow-ref doc:name="Flow-ref to okta-sys-api-main" doc:id="c85a16d5-3680-4f6a-8c1c-0f441c30a6e7" name="okta-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b7d1b78a-9c31-4939-95d8-3c25784eb375" >
+						<logger level="INFO" doc:name="Logger" doc:id="84393937-43a3-440f-af7f-72e9b4df950c" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="e65b4e0d-3338-4fda-bc2f-70e3fb12c34d" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="okta-sys-api-main-APIKIT:NOT_ACCEPTABLEerror-test" doc:id="aafa07ec-88a8-4594-8cef-d810a584f946" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="0b429e12-beac-448d-ac6b-638ccc527805" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6045e6a6-8d7f-4422-aa20-d1cd9c392d52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="0f652124-d464-40dd-9ecd-a0cdefa2b008" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://oktasysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="fb47e07b-98b3-4618-bd43-b1f9c7c12830" >
+				<flow-ref doc:name="Flow-ref to okta-sys-api-main" doc:id="18be754b-7d48-4cef-bc58-d2da83791b7e" name="okta-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6471c3f8-6931-4717-aa6c-424acfdc08da" >
+						<logger level="INFO" doc:name="Logger" doc:id="8b96e6d0-4a02-40c8-926b-bc61b582ffcc" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="9a50b953-fbde-4db4-b30c-bcc57082b33e" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="okta-sys-api-main-APIKIT:UNSUPPORTED_MEDIA_TYPEerror-test" doc:id="db6490ca-a76d-4ca8-9519-0acaf07123dc" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="ee43fc32-6003-4870-a8a6-8c4a24a297a6" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6045e6a6-8d7f-4422-aa20-d1cd9c392d52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="c6efa87b-f217-40c6-b43b-b2222f6c2963" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://oktasysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="3c87e3f9-0007-4f43-8f44-c79ef62b7f1e" >
+				<flow-ref doc:name="Flow-ref to okta-sys-api-main" doc:id="ae844fde-6d9b-4176-b212-299aa89b5189" name="okta-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="26851aed-f2bf-4306-b885-98c397ff74a0" >
+						<logger level="INFO" doc:name="Logger" doc:id="aef4d664-9f64-45a3-872b-d5d9d41cb87e" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ba70f740-9320-460b-b9fa-c7256a4e395e" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="okta-sys-api-main-APIKIT:NOT_IMPLEMENTEDerror-test" doc:id="8987d73c-976d-4da3-ac3c-16f1867828e0" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="7f315c54-a3bd-4d36-bdd4-7e4c6599078d" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6045e6a6-8d7f-4422-aa20-d1cd9c392d52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="32ee1360-426d-4e33-b5e0-c9debbb049d6" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://oktasysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="c6d45016-6f90-4bd6-81ae-f160522723b1" >
+				<flow-ref doc:name="Flow-ref to okta-sys-api-main" doc:id="6291ae21-3f5a-4be6-91e7-cbde9cc8637a" name="okta-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="071a60fe-a158-4085-b5ae-b025f00573c7" >
+						<logger level="INFO" doc:name="Logger" doc:id="ee2db63e-62cc-42bb-9d9b-ee1261bd15f1" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="60b12cc0-a06e-4e91-a280-ced1774ed23e" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="okta-sys-api-main-ANYerror-test" doc:id="0fa3a8ad-6e6f-4aa1-81ea-881d648103a2" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="830e7bc6-f0e0-4596-8896-205c9b8975b5" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6045e6a6-8d7f-4422-aa20-d1cd9c392d52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="27a75b46-94c2-4be4-8b8f-c96e9df74ac3" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://oktasysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="260e912d-8f17-436c-b8fe-9586cdeb57e5" >
+				<flow-ref doc:name="Flow-ref to okta-sys-api-main" doc:id="caa9d5cc-c77a-4f33-bfb5-7b7c54e5d57b" name="okta-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e55cd969-64d8-4510-916d-2967d1c0c855" >
+						<logger level="INFO" doc:name="Logger" doc:id="251f2fb4-7eac-4d3f-836c-c8cf83ba7e85" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="0df5e777-26ee-4e6c-b529-223f79015fdf" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+
+</mule>

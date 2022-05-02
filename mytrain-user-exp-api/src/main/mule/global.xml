@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:my-sql-database-system-api="http://www.mulesoft.org/schema/mule/my-sql-database-system-api" xmlns:okta-system-api="http://www.mulesoft.org/schema/mule/okta-system-api" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/my-sql-database-system-api http://www.mulesoft.org/schema/mule/my-sql-database-system-api/current/mule-my-sql-database-system-api.xsd http://www.mulesoft.org/schema/mule/okta-system-api http://www.mulesoft.org/schema/mule/okta-system-api/current/mule-okta-system-api.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+    <http:listener-config name="user-exp-api-httpListenerConfig">
+        <http:listener-connection host="localhost" port="${http.port}" />
+    </http:listener-config>
+    <apikit:config name="user-exp-api-config" api="resource::4c7654d2-cece-4bed-9c87-c21d61441297:user-exp-api:1.0.0:raml:zip:user-exp-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <my-sql-database-system-api:config name="MySql_Database_System_API_Config" doc:name="MySql Database System API Config" doc:id="8734076d-1ce3-4b97-8421-c99bb487b373" property_host="${database-sys-api.host}" property_port="${database-sys-api.port}" property_protocol="${database-sys-api.protocol}" property_basePath="/api" />
+    <configuration-properties doc:name="Configuration properties" doc:id="22d14182-3563-442f-bb5b-0499d41c719f" file="user.exp.api.dev.yaml" />
+    <okta-system-api:config name="Okta_System_API_Config" doc:name="Okta System API Config" doc:id="79a1028f-55aa-492b-9db7-62c52710e20a" property_host="localhost" property_port="${okta-sys-api.port}" property_protocol="HTTP" property_basePath="/api" />
+	<json-logger:config name="JSON_Logger_Config" doc:name="JSON Logger Config" doc:id="4814c5a4-6a61-4b37-ae47-896f7ab37128" applicationName="${logger.application.name}" applicationVersion="${logger.application.version}" environment="${logger.env}" />
+	<configuration doc:name="Configuration" doc:id="12a434da-a0ea-46b9-8080-99425f1ed7ba" defaultErrorHandler-ref="globalError_Handler" />
+	<servicenow:config name="ServiceNow_Config" doc:name="ServiceNow Config" doc:id="6d726a7e-b72b-4433-b1d0-fa1e4bc885e4" >
+		<servicenow:basic-connection username="${secure::servicenow.user}" password="${secure::servicenow.password}" serviceAddress="${servicenow.address}" serviceNowVersion="QUEBEC" >
+			<servicenow:user-tables />
+			<servicenow:transport >
+				<servicenow:basic-auth-http-message-dispatcher-provider username="admin" password="^RL4s9@wVoIc" />
+			</servicenow:transport>
+		</servicenow:basic-connection>
+	</servicenow:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="874242c1-1883-4897-93fd-88c0cb914743" file="user.exp.api.dev.yaml" key="mule" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+
+</mule>

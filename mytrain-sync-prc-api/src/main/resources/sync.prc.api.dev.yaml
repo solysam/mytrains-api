@@ -1,0 +1,17 @@
+# Port (for HTTP listener)
+nationalRail-sys-api:
+  port: "8084"              # national rail port
+database-sys-api:
+  port: "8082"              # database port
+
+# ServiceNow (for error ticket logging)
+servicenow:
+  user: "![rqaeoccloxk=]"
+  password: "![1XUL+be2z8HyArSt1noNeQ==]"
+  address: "https://dev107218.service-now.com/"
+
+# Json Logger (appended in Splunk)
+logger:
+  application.name: "mytrain-sync-prc-api"
+  application.version: "0.0"
+  env: "dev"

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd">
+	<error-handler name="globalError_Handler" doc:id="0516a9dc-b122-4009-9ec6-979d2d9d301b" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="bf34fdc8-011d-4dad-9d8a-7910db8d99bb" type="ANY">
+			<ee:transform doc:name="error" doc:id="5ea085af-5a85-4461-a190-185ba86d61d7">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output text/plain
+---
+"API Name - " ++ Mule::p('logger.application.name') ++ "\n" ++
+"Error Details - " ++ error.errorType.namespace ++ ":" ++ error.errorType.identifier ++ "\n" ++ 
+"Description - " ++ error.detailedDescription]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<ee:transform doc:name="ticket" doc:id="ab00178d-0d81-4901-b1ff-976112a23c12">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.service-now.com/incident
+---
+{
+	ns0#insert: {
+		short_description: payload,
+		state: "New"
+	}
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<servicenow:invoke doc:name="Generate ticket" doc:id="864f4275-4ccf-4832-9d6e-8e21ffbe7884" config-ref="ServiceNow_Config" service="incident" operation="insert" />
+		</on-error-propagate>
+	</error-handler>
+</mule>

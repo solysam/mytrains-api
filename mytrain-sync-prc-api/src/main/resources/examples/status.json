@@ -1,0 +1,20 @@
+[
+{
+	subscriptionID: 01,
+	from: "Abbey Wood",
+	to: "London Bridge",
+	STA: "15:54",
+	ETA: "On time",
+	delayReason: "",
+	timeStamp: "2022-03-15T15:53:55.7058652+00:00"
+},
+{
+	subscriptionID: 01,
+	from: "Abbey Wood",
+	to: "London Bridge",
+	STA: "15:54",
+	ETA: "16:06",
+	delayReason: "High Winds",
+	timeStamp: "2022-03-15T15:53:55.7058652+00:00"
+}
+]

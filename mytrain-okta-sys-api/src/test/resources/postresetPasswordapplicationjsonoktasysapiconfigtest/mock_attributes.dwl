@@ -1,0 +1,30 @@
+{
+  "headers": {
+    "date": "Mon, 18 Apr 2022 05:12:03 GMT",
+    "content-type": "application/json",
+    "transfer-encoding": "chunked",
+    "connection": "keep-alive",
+    "server": "nginx",
+    "public-key-pins-report-only": "pin-sha256=\"r5EfzZxQVvQpKo3AgYRaT7X2bDO/kj3ACwmxfdT2zt8=\"; pin-sha256=\"MaqlcUgk2mvY/RFSGeSwBRkI+rZ6/dxe/DuQfBT/vnQ=\"; pin-sha256=\"72G5IEvDEWn+EThf3qjR7/bQSWaS2ZSLqolhnO6iyJI=\"; pin-sha256=\"rrV6CLCCvqnk89gWibYT0JO6fNQ8cCit7GGoiVTjCOg=\"; max-age=60; report-uri=\"https://okta.report-uri.com/r/default/hpkp/reportOnly\"",
+    "vary": "Accept-Encoding",
+    "x-okta-request-id": "YlzzIxuooGkxkh@YZ9WpegAACV4",
+    "x-xss-protection": "0",
+    "p3p": "CP=\"HONK\"",
+    "x-rate-limit-limit": "100",
+    "x-rate-limit-remaining": "99",
+    "x-rate-limit-reset": "1650258783",
+    "cache-control": "no-cache, no-store",
+    "pragma": "no-cache",
+    "expires": "0",
+    "content-security-policy-report-only": "default-src 'self' dev-32798618.okta.com *.oktacdn.com; connect-src 'self' dev-32798618.okta.com dev-32798618-admin.okta.com *.oktacdn.com *.mixpanel.com *.mapbox.com app.pendo.io data.pendo.io pendo-static-5634101834153984.storage.googleapis.com https://oinmanager.okta.com data:; script-src 'unsafe-inline' 'unsafe-eval' 'self' dev-32798618.okta.com *.oktacdn.com; style-src 'unsafe-inline' 'self' dev-32798618.okta.com *.oktacdn.com app.pendo.io cdn.pendo.io pendo-static-5634101834153984.storage.googleapis.com; frame-src 'self' dev-32798618.okta.com dev-32798618-admin.okta.com login.okta.com; img-src 'self' dev-32798618.okta.com *.oktacdn.com *.tiles.mapbox.com *.mapbox.com app.pendo.io data.pendo.io cdn.pendo.io pendo-static-5634101834153984.storage.googleapis.com data: blob:; font-src 'self' dev-32798618.okta.com data: *.oktacdn.com fonts.gstatic.com; frame-ancestors 'self'",
+    "content-security-policy": "default-src 'self' dev-32798618.okta.com *.oktacdn.com; connect-src 'self' dev-32798618.okta.com dev-32798618-admin.okta.com *.oktacdn.com *.mixpanel.com *.mapbox.com app.pendo.io data.pendo.io pendo-static-5634101834153984.storage.googleapis.com https://oinmanager.okta.com data:; script-src 'unsafe-inline' 'unsafe-eval' 'self' dev-32798618.okta.com *.oktacdn.com; style-src 'unsafe-inline' 'self' dev-32798618.okta.com *.oktacdn.com app.pendo.io cdn.pendo.io pendo-static-5634101834153984.storage.googleapis.com; frame-src 'self' dev-32798618.okta.com dev-32798618-admin.okta.com login.okta.com; img-src 'self' dev-32798618.okta.com *.oktacdn.com *.tiles.mapbox.com *.mapbox.com app.pendo.io data.pendo.io cdn.pendo.io pendo-static-5634101834153984.storage.googleapis.com data: blob:; font-src 'self' dev-32798618.okta.com data: *.oktacdn.com fonts.gstatic.com; frame-ancestors 'self'",
+    "expect-ct": "report-uri=\"https://oktaexpectct.report-uri.com/r/t/ct/reportOnly\", max-age=0",
+    "x-content-type-options": "nosniff",
+    "strict-transport-security": "max-age=315360000; includeSubDomains",
+    "set-cookie": "sid=\"\"; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/",
+    "set-cookie": "autolaunch_triggered=\"\"; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/",
+    "set-cookie": "JSESSIONID=D4EB55D47A5A222DB011FB7F190B877B; Path=/; Secure; HttpOnly"
+  },
+  "reasonPhrase": "OK",
+  "statusCode": 200
+}

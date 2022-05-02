@@ -1,0 +1,16 @@
+%dw 2.0
+
+type auto_e64a8ca8_d47a_47b1_8a2d_65c525d51142_Output_Payload = {
+  created: Any, 
+  from: String, 
+  startTime: Any, 
+  to: String, 
+  endTime: Any, 
+  subscriptionID: Number, 
+  userID: String, 
+  advanceNotify: Number, 
+  updated: Any, 
+  status: Number, 
+  _?: Any
+}
+

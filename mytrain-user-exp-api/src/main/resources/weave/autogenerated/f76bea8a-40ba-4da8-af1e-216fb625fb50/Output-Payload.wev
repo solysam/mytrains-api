@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_f76bea8a_40ba_4da8_af1e_216fb625fb50_Output_Payload = Array<{|  userID: String,   subscriptionID: Number | Null,   from: String,   to: String,   startTime: Any,   endTime: Any,   advanceNotify: Number,   status: Number,   created: Any,   updated: Any|}>
+

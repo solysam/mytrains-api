@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:my-sql-database-system-api="http://www.mulesoft.org/schema/mule/my-sql-database-system-api" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/my-sql-database-system-api http://www.mulesoft.org/schema/mule/my-sql-database-system-api/current/mule-my-sql-database-system-api.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+
+	<flow name="syncSalesforce-prc-apiFlow" doc:id="62ecf649-b750-42f3-8165-e824075d8955">
+		<scheduler doc:name="Scheduler" doc:id="08e07242-9a3f-4606-8f81-c305a3c049e5" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="DAYS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<os:retrieve doc:name="updated timestamp" doc:id="026868e3-cf44-432b-8a7c-5570719d303a" key="updatedTimeStamp" objectStore="Object_store" target="watermark">
+			<os:default-value ><![CDATA[0]]></os:default-value>
+		</os:retrieve>
+		<my-sql-database-system-api:all-users doc:name="All Users" doc:id="df7e7335-f81a-47c1-8e33-c69c1dc44480" config-ref="MySql_Database_System_API_Config"/>
+		<os:store doc:name="updated timestamp" doc:id="0ec61b29-d84c-4479-ab22-73a6a565d9c6" key="updatedTimeStamp" failOnNullValue="false" objectStore="Object_store">
+			<os:value><![CDATA[#[max (payload map $.updated)]]]></os:value>
+		</os:store>
+		<ee:transform doc:name="new users" doc:id="cf0a2cd6-5009-42a3-ab34-52c8f9e87923">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload filter (value,index) -> (value.updated > vars.watermark)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<ee:transform doc:name="user contact information" doc:id="af2d7a80-b69e-446f-8d2c-cab0bec18470">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	LastName: payload01.lastName,
+	FirstName: payload01.firstName,
+	MobilePhone: payload01.mobilePhone,
+	Email: payload01.email
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="b51c473c-2d08-4bc4-b50c-2a1312fa039c" >
+			<when expression="#[payload == []]">
+				<json-logger:logger doc:name="empty" doc:id="1cb9eb9a-aba6-4bc8-9928-0d1e6fd79a5e" config-ref="JSON_Logger_Config" message="empty"/>
+			</when>
+			<otherwise >
+				<salesforce:upsert doc:name="user contact information" doc:id="e131ac00-fb9b-49ff-8e2c-83c6014213ba" config-ref="Salesforce_Config" objectType="Contact" externalIdFieldName="Email" />
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

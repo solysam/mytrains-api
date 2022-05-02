@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="error-suite.xml" />
+
+	<munit:test name="database-sys-api-main-APIKIT:BAD_REQUESTerror-test" doc:id="4b847363-8ca9-4ea9-aeba-e227426ef61d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="402bfda0-39b9-44f8-a7b3-71a10bf2d36a" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d73d6818-d726-4d6c-b2d7-d929579b693e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="e82243ac-177f-4304-bd73-402652d1d697" >
+				<munit:payload value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_payload1.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_attributes1.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="a29729b8-c6c7-48f9-9c92-e7a420ec3ea4" >
+				<flow-ref doc:name="Flow-ref to database-sys-api-main" doc:id="e7956119-f1cb-40dc-ad17-175340c4c484" name="database-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b2c6d0dc-fa14-43a1-9640-5e1123c59e61" >
+						<logger level="INFO" doc:name="Logger" doc:id="9009af59-3495-426a-832c-af38aad2e977" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="cc772701-845f-4d13-b1ce-30ec2c6d5da6" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="database-sys-api-main-APIKIT:NOT_FOUNDerror-test" doc:id="460f2779-1b6d-40f2-9b2c-81fd8d22cbd8" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="eab0c9d1-2490-458b-b617-db6941851c21" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d73d6818-d726-4d6c-b2d7-d929579b693e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="fa4698b1-a792-4dd0-9011-09b0e1f991ba" >
+				<munit:payload value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_payload1.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_attributes1.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="48fed0e1-8fa9-4b30-8450-70efdd97ff4d" >
+				<flow-ref doc:name="Flow-ref to database-sys-api-main" doc:id="bd2ab4e8-0c9e-429e-8199-7df9af37521a" name="database-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b15d5ad9-a794-474e-be26-5dbb84bb363f" >
+						<logger level="INFO" doc:name="Logger" doc:id="ba35dad3-58ea-47bb-adfd-2b663ea6ffbd" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="48a0fdbe-0e5f-48b5-889d-cc5c36f514e4" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="database-sys-api-main-APIKIT:METHOD_NOT_ALLOWEDerror-test" doc:id="570092b5-b847-4dae-b97a-788134b4a3f3" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="b3a0e2fd-bb4c-4d12-90f1-d348436c15ef" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d73d6818-d726-4d6c-b2d7-d929579b693e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="9eb7468a-7517-4f2c-b8c1-d22efce3334a" >
+				<munit:payload value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_payload1.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_attributes1.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="782758b4-1862-4672-b9ed-dbe3e318eacb" >
+				<flow-ref doc:name="Flow-ref to database-sys-api-main" doc:id="6463934b-9a5a-4189-b48d-ee5babcd3ba7" name="database-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d49895b3-bc22-413f-97eb-7a8cc399d766" >
+						<logger level="INFO" doc:name="Logger" doc:id="d82e0c9d-8932-4b2d-83c7-4e906f91ba44" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="1107c70a-03a6-44be-99a0-cb59a467b7d9" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="database-sys-api-main-APIKIT:NOT_ACCEPTABLEerror-test" doc:id="65b68fbe-abb3-4311-bc7a-79a0a3d18111" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="622ad8e6-5d7c-4759-bafb-18fea79da46a" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d73d6818-d726-4d6c-b2d7-d929579b693e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="11411a09-f459-4cdf-b2b4-df6b4dfcc87f" >
+				<munit:payload value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_payload1.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_attributes1.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="63e33ebb-7171-47fa-98e9-04d09ced088f" >
+				<flow-ref doc:name="Flow-ref to database-sys-api-main" doc:id="fe22c50e-06ce-42f1-b8e1-13b49758c7f8" name="database-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8100856b-5637-4ccd-bf3e-aa9356775a32" >
+						<logger level="INFO" doc:name="Logger" doc:id="03412081-840b-4944-9d5b-1f32e2d2b182" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="b8aba500-5177-4a76-afb3-8ba71920fc81" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="database-sys-api-main-APIKIT:UNSUPPORTED_MEDIA_TYPEerror-test" doc:id="5b27137f-e94a-4be7-ab1c-ab48f0a4f987" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="cbd07f5d-f9b9-499e-b1a4-0f9be088bd59" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d73d6818-d726-4d6c-b2d7-d929579b693e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+
+
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="4dbbe1d7-9709-4d68-a97d-b4fbfff25b9e" >
+				<munit:payload value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_payload1.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_attributes1.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="11319560-ffc7-4ca8-b0d7-76ebc2c43b22" >
+				<flow-ref doc:name="Flow-ref to database-sys-api-main" doc:id="dfaca2d4-1ed3-4ba5-a9fa-172eebe55570" name="database-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b9ccf4d5-dcd1-4f5a-9c11-662bd38fb19e" >
+						<logger level="INFO" doc:name="Logger" doc:id="f7bbf1ed-63b4-4ea2-bbd1-6746c01112b5" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="3ce14a9b-e764-48f7-8d01-3d9b426a733e" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="database-sys-api-main-APIKIT:NOT_IMPLEMENTEDerror-test" doc:id="a9a7ec79-3784-42a0-8a5c-781ab618da4e" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="4f616f21-f21c-4721-85d7-1845cfb8080a" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d73d6818-d726-4d6c-b2d7-d929579b693e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+
+
+
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="47aa5715-b926-4f11-ae5d-834b295e096f" >
+				<munit:payload value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_payload1.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_attributes1.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="d9142371-e932-4735-96dd-e27a2daae0c1" >
+				<flow-ref doc:name="Flow-ref to database-sys-api-main" doc:id="d2a8cd41-8234-4142-966e-2761c3656f33" name="database-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0fa7e3a9-865e-43b9-bd45-e4969a3f4833" >
+						<logger level="INFO" doc:name="Logger" doc:id="2d80e9d0-9d67-4236-a06c-fb62ca90e70d" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="d10c8f81-8007-4ae0-9282-8fcd1a3db150" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="database-sys-api-main-ANYerror-test" doc:id="21c90d1b-ddec-4f0f-bfa0-6368179c8202" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="d3d6e747-0e59-4a60-b216-c8be619ea90d" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d73d6818-d726-4d6c-b2d7-d929579b693e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			
+
+
+
+
+
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="03869ab9-5489-4563-87dc-23d8b5bcdc12" >
+				<munit:payload value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_payload1.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://databasesysapimaingetUserssuccesstest\set-event_attributes1.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="4efd2c23-274c-48d2-bc59-3fa992ab1369" >
+				<flow-ref doc:name="Flow-ref to database-sys-api-main" doc:id="20c8a758-ed9b-4e4c-b987-1a89574b8119" name="database-sys-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="95bd7456-8063-4254-a83e-f513f9d8dd01" >
+						<logger level="INFO" doc:name="Logger" doc:id="83520ff8-8f9e-4f41-b082-8c094b3b3838" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="25429dc2-1629-4fca-8ddd-6a7866b85471" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+</mule>

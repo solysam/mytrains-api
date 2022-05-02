@@ -1,0 +1,25 @@
+# Port (for HTTP listener)
+http:
+  port: "8081"       
+database-sys-api:
+  port: "8082"          #Port number of http listener at database-sys-api
+  protocol: "HTTP"      #Protocol of http listener at database-sys-api
+  host: "localhost"     #Host of http listener at database-sys-api
+okta-sys-api:
+  port: "8083"                                                      
+  Authorization: "![3yqjiUs08OO0qqSJdsGSVtaHa03/YRgccjaQQDCK0FFn9ZmXWr4PfLpyO9H3UU0h]"  #okta token
+
+# ServiceNow (for error ticket logging)
+servicenow:
+  user: "![rqaeoccloxk=]"
+  password: "![1XUL+be2z8HyArSt1noNeQ==]"
+  address: "https://dev107218.service-now.com/"
+
+# Json Logger (appended in Splunk)
+logger:
+  application.name: "mytrain-user-exp-api"
+  application.version: "0.0"
+  env: "dev"
+  
+  
+  

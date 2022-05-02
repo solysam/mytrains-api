@@ -1,0 +1,13 @@
+%dw 2.0
+
+type auto_00e31739_dae4_4678_91c4_731ee60e2799_Output_Payload = {
+  notificationStatus: String, 
+  created: Any, 
+  delayType: String, 
+  notificationFailureDetail: String, 
+  delayedBy: Number, 
+  alertID?: Number, 
+  subscriptionID: Number, 
+  _?: Any
+}
+

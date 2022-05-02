@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:my-sql-database-system-api="http://www.mulesoft.org/schema/mule/my-sql-database-system-api" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:national-rail-system-api="http://www.mulesoft.org/schema/mule/national-rail-system-api" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/national-rail-system-api http://www.mulesoft.org/schema/mule/national-rail-system-api/current/mule-national-rail-system-api.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/my-sql-database-system-api http://www.mulesoft.org/schema/mule/my-sql-database-system-api/current/mule-my-sql-database-system-api.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<flow name="syncAlerts-prc-flow" doc:id="c29f69b7-02d8-4517-833a-6453439e1023">
+		<scheduler doc:name="Scheduler" doc:id="32caf255-d659-42e8-9166-4816ceb53e0b">
+			<scheduling-strategy>
+				<fixed-frequency frequency="10" timeUnit="MINUTES" />
+			</scheduling-strategy>
+		</scheduler>
+		<json-logger:logger doc:name="syncAlerts" doc:id="117f9bc3-7b74-42e7-8a5e-dc76f5b2c59a" config-ref="JSON_Logger_Config" message="syncAlerts" />
+		<flow-ref doc:name="subscriptions in window" doc:id="3d4a2875-63f1-4a81-8119-c4ace449726a" name="subscriptions-subflow" />
+	</flow>
+	<sub-flow name="subscriptions-subflow" doc:id="ec870f5f-a10d-4873-b34e-2b9dec1b040f" >
+		<my-sql-database-system-api:all-users doc:name="All Users" doc:id="30c01c75-8029-4ef7-83e3-5fb0ab8b548b" config-ref="MySql_Database_System_API_Config"/>
+		<foreach doc:name="For Each" doc:id="b06c3492-5832-45b5-8415-b91353084fea" >
+			<choice doc:name="Choice" doc:id="770f4bd7-a423-4078-a16b-a28243cb241f" >
+				<when expression="#[payload.status == 0]">
+					<json-logger:logger doc:name="no subscriptions" doc:id="9e38f1aa-4855-4565-8813-0f3cdcc91d04" config-ref="JSON_Logger_Config" message="no subscriptions"/>
+				</when>
+				<otherwise >
+					<my-sql-database-system-api:all-subscriptions_1 doc:name="All subscriptions" doc:id="84e9eb8d-d5e3-4bf5-ad53-63fe9490e126" config-ref="MySql_Database_System_API_Config" user-id="#[payload.userID]"/>
+					<ee:transform doc:name="subscriptions" doc:id="0dbd3937-78a2-49d2-94be-620b47d61c9d" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	userID: payload01.userID,
+	subscriptionID: payload01.subscriptionID,
+	timeWindow: payload01.advanceNotify default 0,
+	from: payload01.from,
+	to: payload01.to,	
+	(	if ((payload01.startTime < (now()>>"GMT") as Time as String {format: "HH:mm:ss"} ) and (payload01.endTime > (now()>>"GMT") as Time as String {format: "HH:mm:ss"} )) pass: 0
+		else pass: 1 )	
+}]]></ee:set-payload>
+						</ee:message>
+						<ee:variables >
+						</ee:variables>
+					</ee:transform>
+					<ee:transform doc:name="filter subscriptions" doc:id="2ceeb997-ccfc-4345-ac5d-18d62f9f7b92">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload filter (value,index) -> (value.pass == 0)]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<choice doc:name="select non-empty array" doc:id="d48d5dcf-e499-4b9f-af84-82dd424aa849" >
+						<when expression="#[payload == []]">
+							<json-logger:logger doc:name="emptyArray" doc:id="181eb642-6fe3-4c19-baed-9983043df02d" config-ref="JSON_Logger_Config" message="emptyArray" />
+						</when>
+						<otherwise >
+							<ee:transform doc:name="subscriptions in window" doc:id="a977c111-8f8d-419b-8b13-d3776faeb8cf">
+								<ee:message>
+									<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	userID: payload01.userID,
+	subscriptionID: payload01.subscriptionID,
+	timeWindow: payload01.timeWindow default 0,
+	from: payload01.from,
+	to: payload01.to
+	}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+							<flow-ref doc:name="transform subscriptions" doc:id="ff64f4f6-4248-4d18-9ebf-923dcf918e2f" name="transformSubscriptions-subflow" />
+						</otherwise>
+					</choice>
+				</otherwise>
+			</choice>
+		</foreach>
+	</sub-flow>
+	<sub-flow name="transformSubscriptions-subflow" doc:id="5e6f5960-3225-40cc-8837-b27e551827fd">
+		<foreach doc:name="For Each" doc:id="29ddaf9a-0073-48e0-a94c-dd1a5acc3046">
+			<json-logger:logger doc:name="subscribed-users" doc:id="1e3b4986-0692-4c4f-aaa8-4632230d3456" config-ref="JSON_Logger_Config" message="subscribed-users"/>
+			<my-sql-database-system-api:individual-user doc:name="details for name" doc:id="c5c55bac-31fa-4dcc-960b-a3a013790fa9" config-ref="MySql_Database_System_API_Config" user-id="#[payload.userID]" target="user" />
+			<ee:transform doc:name="subscription details" doc:id="bcc672d8-b115-4947-b7ac-d8f2e932afa1">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	subscriptionID: payload.subscriptionID,
+	from: payload.from,
+	to: payload.to,
+	timeWindow: payload.timeWindow
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="ID"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	firstName: vars.user.FIRST_NAME,
+	lastName: vars.user.LAST_NAME
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<national-rail-system-api:train-running-status doc:name="Train running status" doc:id="43862b60-6643-4d16-8e80-67dafabbfe4a" config-ref="National_Rail_System_API_Config" />
+			<choice doc:name="Choice" doc:id="85a1a7ae-6ef7-4933-a513-fccdc484bad2">
+				<when expression="#[payload.details == null]">
+					<json-logger:logger doc:name="emptyArray" doc:id="b1ade9c6-ca61-46cb-b0a7-985396b2ae5b" config-ref="JSON_Logger_Config" message="emptyArray"/>
+				</when>
+				<otherwise>
+					<ee:transform doc:name="convert to status" doc:id="bf49ae23-8768-4ac7-b325-cbfd48057362">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+
+payload.details map ( detail , indexOfDetail ) -> {
+	firstName: vars.user.firstName[0],
+	lastName: vars.user.lastName[0],
+	subscriptionID: payload.subscriptionID as Number,
+	from: payload.from,
+	to: payload.to,
+	STA: detail.STA,
+	ETA: detail.ETA,
+	delayReason: detail.reason,
+	timeStamp: detail.generated as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+	(	if (detail.ETA == "On time") status: "On time"
+		else if (detail.ETA == "Cancelled") status: "Cancelled"
+		else status: (|00:00| + (detail.ETA - detail.STA)).minutes)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+					<flow-ref doc:name="get alerts" doc:id="da7325ba-3c95-41ee-a3a5-bf86d925ad36" name="getAlerts-subFlow" />
+				</otherwise>
+			</choice>
+		</foreach>
+	</sub-flow>
+	<sub-flow name="getAlerts-subFlow" doc:id="6d395123-1462-42ea-a348-8e40c534eb2f">
+		<json-logger:logger doc:name="train status" doc:id="2e7a8521-eaf3-4c27-8181-8fc600dff8dd" config-ref="JSON_Logger_Config" message="train status" />
+		<ee:transform doc:name="Transform Message" doc:id="56c71867-1aad-49a8-a826-858a3568034d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="5efa13ec-9727-458d-8825-f3e1c36815ff">
+			<ee:transform doc:name="Delayed" doc:id="3dc88e47-a06c-408d-b6de-6728fa37d818">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"First-Name": payload.firstName,
+	"Last-Name": payload.lastName,
+	"Subscription-ID": payload.subscriptionID as Number,
+	"From-Station": payload.from,
+	"To-Station": payload.to,
+	STA: payload.STA,
+	ETA: payload.ETA,
+	Reason: payload.delayReason,
+	"Time-Stamp": payload.timeStamp,
+	status: payload.status
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			<choice doc:name="Choice" doc:id="1ed62796-52f9-44e3-b5d0-46e13214441f">
+				<when expression='#[payload."First-Name" == null]'>
+					<json-logger:logger doc:name="empty user details" doc:id="69cc0e77-f564-42d3-a93a-34303b828c6c" config-ref="JSON_Logger_Config" message="empty user details"/>
+				</when>
+				<when expression='#[payload.ETA == "On time"]'>
+					<json-logger:logger doc:name="on time trains" doc:id="0a5304d0-a657-4d1f-90cc-e560e5a01c24" config-ref="JSON_Logger_Config" message="on time trains"/>
+				</when>
+				<otherwise>
+					<ee:transform doc:name="Alert Details" doc:id="44c7661d-43ef-47fe-af4a-27384b176435">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"First-Name": payload."First-Name",
+	"Last-Name": payload."Last-Name",
+	"Subscription-ID": payload."Subscription-ID",
+	"From-Station": payload."From-Station",
+	"To-Station": payload."To-Station",
+	STA: payload.STA as Time,
+	ETA: payload.ETA,
+	Reason: payload.Reason,
+	"Time-Stamp": payload."Time-Stamp",
+	status: payload.status
+}
+
+]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<vm:publish doc:name="Publish" doc:id="d0239d32-b205-404f-8735-c5f0945b9c10" config-ref="VM_Config" queueName="VM1" sendCorrelationId="ALWAYS" correlationId="#[correlationId]" />
+				</otherwise>
+			</choice>
+		</foreach>
+	</sub-flow>
+	<flow name="sendAlerts-prc-flow" doc:id="f31028fd-e99d-4d38-98e1-982b486bd751" >
+		<vm:listener queueName="VM1" doc:name="Listener" doc:id="58c719a1-b083-4960-b2a5-1de752e68dc3" config-ref="VM_Config"/>
+		<json-logger:logger doc:name="delayed trains" doc:id="7e8b97ca-67cb-4092-a57f-6dde8e149531" config-ref="JSON_Logger_Config" message="delayed trains"/>
+		<ee:transform doc:name="Transform Message" doc:id="4a6d8f19-44f0-4447-a20b-67676ab306d0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"First-Name": payload."First-Name",
+	"Last-Name": payload."Last-Name",
+	"Subscription-ID": payload."Subscription-ID",
+	"From-Station": payload."From-Station",
+	"To-Station": payload."To-Station",
+	STA: payload.STA  as Time as String {format: "HH:mm:ss"},	
+	(	if (payload.ETA == "Cancelled") ETA: "Cancelled"
+		else ETA: payload.ETA  as Time as String {format: "HH:mm:ss"}),
+	Reason: payload.Reason,
+	"Time-Stamp": payload."Time-Stamp",
+	status: payload.status
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="status" ><![CDATA[%dw 2.0
+output application/json
+---
+if (payload.status == "Cancelled") status: "2"
+else status: "1"]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<try doc:name="Try" doc:id="30feb637-1415-4437-9e5e-3d52d002369f" >
+			<choice doc:name="Choice" doc:id="da39f880-2e67-429d-b3b5-d8c981f5dfaa" >
+				<when expression='#[payload.ETA == "Cancelled"]'>
+					<ee:transform doc:name="user email for cancelled" doc:id="f7cf3a33-ef39-4252-8f38-895300327adb" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="body" ><![CDATA[%dw 2.0
+output text/plain
+---
+"Dear" ++ " " ++ payload."First-Name" as String ++ " " ++ payload."Last-Name" as String ++ "\n" ++
+"Please find the details below" ++ "\n" ++
+"Your train scheduled for" ++ " " ++ payload.STA as String ++ " " ++ "is" ++ " " ++ payload.ETA as String]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<email:send doc:name="cancelled mail" doc:id="5e39481b-dd2c-41c7-ac46-38b1b29b6aba" config-ref="Email_SMTP" fromAddress="samsoly1790@gmail.com" subject='#["Delay in your train between" ++ " " ++ payload."From-Station" as String ++ " " ++ "and" ++ " " ++ payload."To-Station" as String]' >
+						<email:to-addresses >
+							<email:to-address value="samsoly17@gmail.com" />
+						</email:to-addresses>
+						<email:reply-to-addresses />
+						<email:body contentType="text/plain" >
+							<email:content ><![CDATA[#[vars.body]]]></email:content>
+						</email:body>
+					</email:send>
+					<flow-ref doc:name="messageSent-subFlow" doc:id="8ad68229-2897-4f54-8585-7c6ba433552d" name="messageSent-subFlow" />
+				</when>
+				<otherwise >
+					<ee:transform doc:name="user email for delay" doc:id="baee3d96-eb57-48e2-873b-4704a7e0b798">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="body"><![CDATA[%dw 2.0
+output text/plain
+---
+"Dear" ++ " " ++ payload."First-Name" as String ++ " " ++ payload."Last-Name" as String ++ "\n" ++
+"Please find the details below" ++ "\n" ++
+"Your train scheduled for" ++ " " ++ payload.STA as String ++ " " ++ "is arriving at" ++ " " ++ payload.ETA as String]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+					<email:send doc:name="delayed mail" doc:id="04a12b01-4d4e-441f-a1f5-0cfa73f4d4fe" config-ref="Email_SMTP" fromAddress="samsoly1790@gmail.com" subject='#["Delay in your train between" ++ " " ++ payload."From-Station" as String ++ " " ++ "and" ++ " " ++ payload."To-Station" as String]'>
+				<email:to-addresses>
+					<email:to-address value="samsoly17@gmail.com" />
+				</email:to-addresses>
+			<email:reply-to-addresses />
+				<email:body contentType="text/plain">
+					<email:content><![CDATA[#[vars.body]]]></email:content>
+			</email:body>
+			</email:send>
+					<flow-ref doc:name="messageSent-subFlow" doc:id="cb66801d-0c56-4c93-b78d-75ca6871a53b" name="messageSent-subFlow" />
+				</otherwise>
+			</choice>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2fa29acd-0ab8-4043-8975-88f3cc4ee1d7" >
+					<ee:transform doc:name="failed" doc:id="02b4b4d4-4b06-44d6-8564-c1e31b708b24" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	subscriptionID: payload."Subscription-ID" as Number default 0,
+	delayType: vars.status.status,
+	notificationStatus: "Not Sent",
+	notificationFailureDetail: "Failed",
+	(	if (payload.status == "On time") delayedBy: 0
+		else if (payload.status == "Cancelled") delayedBy: 0
+		else delayedBy:payload.status ),
+	created: now() as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"}
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<flow-ref doc:name="saveTrainAlerts" doc:id="5f6661b4-2a11-4ed2-8d25-9c768d5e6083" name="saveAlerts-subFlow" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</flow>
+	<sub-flow name="messageSent-subFlow" doc:id="06cca0ce-a816-49a2-b5a4-4de12639c966">
+		<try doc:name="Try" doc:id="caddca02-1061-4665-9464-2ca3ee166278">
+				<ee:transform doc:name="success" doc:id="a03d16c2-420a-4730-98a7-efc98f3d46fb">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	subscriptionID: payload."Subscription-ID" as Number default 0,
+	delayType: vars.status.status,
+	notificationStatus: "Sent",
+	notificationFailureDetail: "NA",
+	(	if (payload.status == "On time") delayedBy: 0
+		else if (payload.status == "Cancelled") delayedBy: 0
+		else delayedBy:payload.status ),
+	created: now() as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"}
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+				<flow-ref doc:name="saveTrainAlerts" doc:id="82ba7956-42ea-4780-a032-6dcdf741246d" name="saveAlerts-subFlow" />
+			<error-handler>
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0ebe1354-1099-4c6e-a189-f41bf8fe3a31">
+						<ee:transform doc:name="failed" doc:id="9fe1ce35-72fa-4f18-b037-39ae59aeaf7c">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	subscriptionID: payload."Subscription-ID" as Number default 0,
+	delayType: vars.status.status,
+	notificationStatus: "Sent",
+	notificationFailureDetail: "Failed to access database",
+	(	if (payload.status == "On time") delayedBy: 0
+		else if (payload.status == "Cancelled") delayedBy: 0
+		else delayedBy:payload.status ),
+	created: now() as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"}
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					<flow-ref doc:name="saveTrainAlerts" doc:id="af44f137-cc8b-4582-82f1-b6561c49f2a5" name="saveAlerts-subFlow" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+	</sub-flow>
+	<sub-flow name="saveAlerts-subFlow" doc:id="416d6c09-4675-4cb5-9d76-b0562e1a8011">
+		<json-logger:logger doc:name="save train alerts input" doc:id="1c3b0e34-7d8a-464d-8a0a-48d8b474f1ca" config-ref="JSON_Logger_Config" message="save train alerts input"/>
+		<my-sql-database-system-api:save-train-alerts doc:name="Save train alerts" doc:id="90bfb713-8259-43df-94d9-112ea7313b2b" config-ref="MySql_Database_System_API_Config"/>
+	</sub-flow>
+</mule>

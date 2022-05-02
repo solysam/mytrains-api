@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="database-sys-api-main">
+        <http:listener config-ref="database-sys-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="database-sys-api-config" doc:id="d73d6818-d726-4d6c-b2d7-d929579b693e"/>
+
+    </flow>
+    <flow name="database-sys-api-console">
+        <http:listener config-ref="database-sys-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="database-sys-api-config"/>
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="get:\users:database-sys-api-config" doc:id="9a1db04f-95e6-47cc-a729-2ffc81556a70">
+		<flow-ref doc:name="retrieve-usersForAdmin" doc:id="80adbe99-5e03-4242-8b71-eda0321a266b" name="retrieve-usersForAdmin-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id):database-sys-api-config" doc:id="0118a83f-fb7f-4f8c-b37e-096a1f74f99a">
+        <flow-ref doc:name="retrieve-userForAdmin" doc:id="aae5bcc1-2fb7-4f14-99cc-8f6cd6a3b240" name="retrieve-userForAdmin-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id)\subscriptions:database-sys-api-config">
+		<flow-ref doc:name="retrieve-subscriptionsForAdmin" doc:id="15dc340b-61ae-4ca1-b508-2966abeaa4f1" name="retrieve-subscriptionsForAdmin-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id)\subscriptions\(subscription_id):database-sys-api-config">
+		<flow-ref doc:name="retrieve-subscriptionForAdmin" doc:id="dd5376a6-dc37-43f2-b0aa-f7351c52416c" name="retrieve-subscriptionForAdmin-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id)\subscriptions\(subscription_id)\alerts:database-sys-api-config">
+		<flow-ref doc:name="retrieve-alertsForAdmin" doc:id="db91202b-62e4-434e-8c6d-2b2f0b8cf954" name="retrieve-alertsForAdmin-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id)\subscriptions\(subscription_id)\alerts\(alert_id):database-sys-api-config">
+		<flow-ref doc:name="retrieve-alertForAdmin" doc:id="77cf3d40-06d3-4649-8475-0a3040bd5087" name="retrieve-alertForAdmin-flow"/>
+    </flow>
+	<flow name="get:\login\subscriptions:database-sys-api-config">
+		<flow-ref doc:name="retrieve-subscriptionsForUser" doc:id="570841c2-3c7e-4404-a708-3149d663852d" name="retrieve-subscriptionsForUser-flow"/>
+    </flow>
+	<flow name="get:\login\subscriptions\(subscription_id):database-sys-api-config">
+		<flow-ref doc:name="retrieve-subscriptionForUser" doc:id="df7a305c-ce48-49a1-a704-0d3ec8af1293" name="retrieve-subscriptionForUser-flow"/>
+    </flow>
+	<flow name="get:\login\subscriptions\(subscription_id)\alerts:database-sys-api-config">
+		<flow-ref doc:name="retrieve-alertsForUser" doc:id="e766154a-8fed-48e9-af97-766d0b064b25" name="retrieve-alertsForUser-flow"/>
+    </flow>
+    <flow name="get:\login\subscriptions\(subscription_id)\alerts\(alert_id):database-sys-api-config">
+		<flow-ref doc:name="retrieve-alertForUser" doc:id="a89df63e-0643-48bc-a1cf-3068a2c23bbf" name="retrieve-alertForUser-flow"/>
+    </flow>
+    <flow name="post:\users:application\json:database-sys-api-config">
+		<flow-ref doc:name="save-userDetails" doc:id="131ffcac-a5e5-4479-981d-826b99f35351" name="save-userDetails-flow"/>
+    </flow>
+	<flow name="post:\login\subscriptions:application\json:database-sys-api-config">
+		<flow-ref doc:name="save-alertSubscription" doc:id="132b1ea8-6ad0-4a08-863b-5323f917525e" name="save-alertSubscription-flow"/>
+    </flow>
+    <flow name="post:\trainAlert:application\json:database-sys-api-config">
+		<flow-ref doc:name="save-alert" doc:id="37a7d6c5-7612-46c7-aec8-190bbeaaf2ef" name="save-alert-flow"/>
+    </flow>
+</mule>

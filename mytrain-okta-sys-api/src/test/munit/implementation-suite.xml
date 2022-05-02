@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-suite.xml" />
+	<munit:test name="login-user-flow-test" doc:id="bcd7ba2b-528f-4c05-91c1-1e12bfd730ce" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock login-user-output" doc:id="4eaf5547-e8c8-4a78-86a9-bc44226a0086" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="102792a9-afe6-4bb6-8458-fd6bcb98d0f7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://loginuserflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://loginuserflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://loginuserflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock login user in okta" doc:id="f62a916f-01ef-482c-9b98-8fbd6467757f" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="e27d07d6-993b-42eb-8c81-652defbb16a7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://loginuserflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://loginuserflowtest\mock_attributes1.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://loginuserflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock login-user-input" doc:id="e6d11a36-2078-433f-9eca-419345b17e9a" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="111d15ed-9a6f-4360-95cd-81db66ea1a47" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://loginuserflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://loginuserflowtest\mock_attributes2.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://loginuserflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="82b6647b-1e13-4ff0-83c2-ec115bfd605a" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://loginuserflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://loginuserflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://loginuserflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to login-user-flow" doc:id="9d2f089e-f8bd-4d75-91cf-b9f3ef3b0a83" name="login-user-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="7f7985cd-461a-4b49-97a1-65c2319bda52" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import loginuserflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify response-login user" doc:id="cb277f31-0bc5-4b27-b0b9-c9c39e8370d1" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bab6d6b0-2d05-4f40-88eb-e159d9a8d5c3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify request-login user" doc:id="c8831714-26c1-4f00-8c2d-2c350f145de2" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6ade4f10-1ac5-41d6-a5e2-2dd512063d05" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="register-user-flow-test" doc:id="485db3a0-84ee-4837-89c3-10db2999c28a" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock register-user-input" doc:id="02076ab4-d548-4067-b393-c587c8105120" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="40288ee5-f565-49de-913d-48eb9c75e8ea" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://registeruserflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://registeruserflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://registeruserflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock register-user-output" doc:id="c3512a7e-7746-4bda-9047-fc66cb2331ba" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c1b62ea4-fe89-45b7-8c71-164600558479" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://registeruserflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://registeruserflowtest\mock_attributes1.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://registeruserflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock register user in okta" doc:id="90cd0622-1cd9-4ac7-85d6-c853b8184749" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="fb6b30c5-d18c-4f92-b39b-66a0eab406c7" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://registeruserflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://registeruserflowtest\mock_attributes2.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://registeruserflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="0507137b-bd07-4cf8-8011-6ab889512a00" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://registeruserflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://registeruserflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://registeruserflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to register-user-flow" doc:id="c51c2750-8bc4-4deb-9789-bb3ecaacebd7" name="register-user-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="c0b1a7bf-bee8-4864-bfda-ca56a387a87b" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import registeruserflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify response-register user" doc:id="887ed0e0-cad7-40b7-9192-adf9c00d02c6" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="59ad4a2b-46e5-47bb-8b0d-6867fc0a7539" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify request-register user" doc:id="1fede025-78de-4a97-ae40-b4d4bdcbce79" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="be97f2e7-1ee9-4e0f-89e8-38c29dfad306" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="reset-password-flow-test" doc:id="478c684f-936b-4327-a326-d06dfd05aff6" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock userID" doc:id="3295c55e-7b0c-4100-bafb-baf81b0db611" processor="set-variable">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="abf2752d-a48e-4a2a-8e77-c5c0e4da7474" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://resetpasswordflowtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://resetpasswordflowtest\mock_variable_1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock reset user password" doc:id="333cf5e7-c75c-4e72-8063-6716fd257302" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="98e1d809-7b19-4a25-a07f-9a2f3f9f255f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://resetpasswordflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://resetpasswordflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://resetpasswordflowtest\mock_variable_2.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://resetpasswordflowtest\mock_variable_3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock reset-password-output" doc:id="299d1795-db82-4d2b-a436-863b06ef2b09" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0c341456-15c4-413b-a8de-59fedea938cd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://resetpasswordflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://resetpasswordflowtest\mock_attributes1.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://resetpasswordflowtest\mock_variable_4.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://resetpasswordflowtest\mock_variable_5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock reset-password-input" doc:id="3021ddaa-4adc-414a-8e63-e80e4401b58e" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0cf32d56-a238-4eb8-92ae-3ce3932bf298" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://resetpasswordflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://resetpasswordflowtest\mock_attributes2.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://resetpasswordflowtest\mock_variable_6.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="928d71eb-ffb6-4def-a643-f544f297b832" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://resetpasswordflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://resetpasswordflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://resetpasswordflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to reset-password-flow" doc:id="a65d8c5e-14ad-4394-ad46-c513567fce52" name="reset-password-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="38a5128f-35a7-4762-9dc8-1fcbc52c37bc" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import resetpasswordflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify request-password reset" doc:id="03f41854-86f6-4113-8585-2052b4ee0f99" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="febfa39a-7f6e-4ccd-bd22-c0aa2dc25705" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify response-password reset" doc:id="80b41844-3892-4eca-9ef0-6c2378a26809" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="54ea8216-9e54-4f1e-8989-9295b39dc3f6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="interface-suite.xml" />
+	<munit:test name="nationalRail-sys-api-main-test" doc:id="6c89aaf7-52a8-4b82-b3f1-2e686d6a204d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="19a4a4ff-2d42-4165-aeaf-fec65d170724" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44c3c503-2768-4733-a162-0736455116e3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://nationalRailsysapimaintest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="faad2b06-3aee-4ada-a753-98e71fd2227c" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://nationalRailsysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://nationalRailsysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to nationalRail-sys-api-main" doc:id="2140d9ad-4b9e-47c2-be24-695aa1e65bd7" name="nationalRail-sys-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="863f766f-fb8d-4487-a11b-e1024de962bc" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import nationalRailsysapimaintest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	
+	
+	
+	<munit:test name="post:\arrivals:application\json:nationalRail-sys-api-config-test" doc:id="d0d9d3e8-ccca-4248-a032-9fa581c97e41" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock arrivals" doc:id="0bb740e2-06c5-420b-ab19-7de3a4af01f4" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="da0f05b7-d5ab-4bec-b47c-1b15ce61f940" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://postarrivalsapplicationjsonnationalRailsysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://postarrivalsapplicationjsonnationalRailsysapiconfigtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subID" value="#[output application/json --- readUrl('classpath://postarrivalsapplicationjsonnationalRailsysapiconfigtest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://postarrivalsapplicationjsonnationalRailsysapiconfigtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="cc15dbf3-4931-4b71-b342-710bef530a8a" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postarrivalsapplicationjsonnationalRailsysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postarrivalsapplicationjsonnationalRailsysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postarrivalsapplicationjsonnationalRailsysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\arrivals:application\json:nationalRail-sys-api-config" doc:id="06310da0-0bc1-4dbd-8c75-159ea83242d4" name="post:\arrivals:application\json:nationalRail-sys-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="3b05daf9-a196-4cde-81b5-b9b3194f2d67" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postarrivalsapplicationjsonnationalRailsysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

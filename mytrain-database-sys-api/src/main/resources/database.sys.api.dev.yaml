@@ -1,0 +1,23 @@
+# Database (for saving and retrievng record)
+db:
+  host: "64.227.37.97"
+  port: "3306"
+  user: "![TjrgNiKb/sw=]"
+  password: "![iaKGqt1gtS8zKKGp6tVkOg==]"
+  database: "nrs"
+  
+# Port (for HTTP listener)
+http:
+  port: "8082"
+  
+# ServiceNow (for error ticket logging)
+servicenow:
+  user: "![rqaeoccloxk=]"
+  password: "![1XUL+be2z8HyArSt1noNeQ==]"
+  address: "https://dev107218.service-now.com/"
+  
+# Json Logger (appended in Splunk)
+logger:
+  application.name: "mytrain-database-sys-api"
+  application.version: "0.0"
+  env: "dev"

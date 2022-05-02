@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="arrivals-flow" doc:id="97593387-db0d-40df-8f48-50d8daf62307" >
+		<json-logger:logger doc:name="arrivals-flow-input" doc:id="a6fad486-ab46-42fb-9f13-7c4fbd2a0233" config-ref="JSON_Logger_Config" message="arrivals-flow-input"/>
+		<ee:transform doc:name="request arrivals" doc:id="c21946bb-4dcc-48bb-bee0-64f49c8dac46" >
+			<ee:message >
+				<ee:set-payload resource="request-arrivals.dwl" />
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="subID" ><![CDATA[%dw 2.0
+output application/json
+---
+payload.subscriptionID
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<wsc:consume operation="GetArrivalBoard" doc:name="get arrivals" doc:id="58a72c54-118b-4d67-a448-d2af2ba82171" config-ref="Web_Service_Consumer_Config">
+			<wsc:message >
+				<wsc:headers ><![CDATA[#[output application/xml
+---
+headers: {
+		AccessToken: {
+				TokenValue: Mule::p('secure::soap.token')
+			}
+	}]]]></wsc:headers>
+			</wsc:message>
+		</wsc:consume>
+		<ee:transform doc:name="arrivals response" doc:id="5ec0b595-1cb1-4c55-b471-9daaa4ef4699" >
+			<ee:message >
+				<ee:set-payload resource="response-arrivals.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="arrivals-flow-output" doc:id="80e0d434-568b-4974-8d4a-ec2a92e76afa" config-ref="JSON_Logger_Config" message="arrivals-flow-output"/>
+	</flow>
+</mule>

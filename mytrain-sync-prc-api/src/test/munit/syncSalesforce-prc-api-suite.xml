@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="syncSalesforce-prc-api-suite.xml" />
+	<munit:test name="syncSalesforce-prc-apiFlow-test" doc:id="3eb7d914-ac4e-4fb8-aef0-47ba3fa97a8b" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock empty" doc:id="734ae358-e89c-4401-9f58-0cbe53c4aca8" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1cb9eb9a-aba6-4bc8-9928-0d1e6fd79a5e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://syncSalesforceprcapiFlowtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="watermark" value="#[output application/java --- readUrl('classpath://syncSalesforceprcapiFlowtest\mock_variable_.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock updated timestamp" doc:id="af45bca5-b975-42cb-aa40-26a9d1565660" processor="os:retrieve">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="026868e3-cf44-432b-8a7c-5570719d303a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[readUrl('classpath://syncSalesforceprcapiFlowtest\mock_payload1.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="watermark" value="#[output application/java --- readUrl('classpath://syncSalesforceprcapiFlowtest\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock users" doc:id="7a0427ff-99e2-460d-abe7-c3d244c59d67" processor="my-sql-database-system-api:all-users">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="df7e7335-f81a-47c1-8e33-c69c1dc44480" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://syncSalesforceprcapiFlowtest\mock_payload2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="watermark" value="#[output application/java --- readUrl('classpath://syncSalesforceprcapiFlowtest\mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock updated timestamp" doc:id="0cc429c5-4a37-4db1-b951-6df80fdff948" processor="os:store">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0ec61b29-d84c-4479-ab22-73a6a565d9c6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://syncSalesforceprcapiFlowtest\mock_payload3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="watermark" value="#[output application/java --- readUrl('classpath://syncSalesforceprcapiFlowtest\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="46431916-d7f7-445f-b7e5-a9bca747ea7d" >
+				<munit:payload value="#[readUrl('classpath://syncSalesforceprcapiFlowtest\set-event_payload.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to syncSalesforce-prc-apiFlow" doc:id="5f9460fb-1897-4241-9d77-c0aa3b08ac37" name="syncSalesforce-prc-apiFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="9acf0064-c078-4b7b-9220-01ce2f04029f" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import syncSalesforceprcapiFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify new users" doc:id="f8fb9779-f7d7-4b85-bd0e-99e111df80be" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cf0a2cd6-5009-42a3-ab34-52c8f9e87923" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+</mule>

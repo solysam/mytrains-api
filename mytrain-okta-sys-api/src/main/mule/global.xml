@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+    <http:listener-config name="okta-sys-api-httpListenerConfig">
+        <http:listener-connection host="localhost" port="${http.port}" />
+    </http:listener-config>
+    <apikit:config name="okta-sys-api-config" api="resource::4c7654d2-cece-4bed-9c87-c21d61441297:okta-sys-api:1.0.0:raml:zip:okta-sys-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="8e3d1523-46d3-49df-abbf-b6797e672c40" basePath="${http.base}">
+        <http:request-connection host="${http.host}" protocol="HTTPS" />
+    </http:request-config>
+    <configuration-properties doc:name="Configuration properties" doc:id="0df921ff-6cb0-4957-aa58-c6a90ce7bd7c" file="okta.sys.api.dev.yaml" />
+	<json-logger:config name="JSON_Logger_Config" doc:name="JSON Logger Config" doc:id="d98abf1a-bdfa-4d29-9b12-c52668052f42" applicationName="${logger.application.name}" applicationVersion="${logger.application.version}" environment="${logger.env}" />
+	<configuration doc:name="Configuration" doc:id="7008f36f-ca22-40fd-8d76-08d46e016b4e" defaultErrorHandler-ref="globalError_Handler" />
+	<servicenow:config name="ServiceNow_Config" doc:name="ServiceNow Config" doc:id="a733fc11-5fc3-4c5c-8efc-34ef219d9f44" >
+		<servicenow:basic-connection username="${secure::servicenow.user}" password="${secure::servicenow.password}" serviceAddress="${servicenow.address}" serviceNowVersion="QUEBEC" >
+			<servicenow:user-tables />
+			<servicenow:transport >
+				<servicenow:basic-auth-http-message-dispatcher-provider username="admin" password="^RL4s9@wVoIc" />
+			</servicenow:transport>
+		</servicenow:basic-connection>
+	</servicenow:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="f058c387-a821-4d77-b20e-2503357e0ccd" file="okta.sys.api.dev.yaml" key="mule" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+</mule>

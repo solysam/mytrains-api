@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="syncAlerts-prc-api-test-suite.xml" />
+	<munit:test name="syncAlerts-prc-api-test-suite-syncAlerts-prc-flowTest" doc:id="3c44fba9-d187-4031-bd51-0b8d25387246" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="scheduler" doc:id="4ed5cc13-83a7-4f12-985e-dc1c3e73e0e3" processor="scheduler">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32caf255-d659-42e8-9166-4816ceb53e0b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="users with subscription" doc:id="c23e5118-6575-43f4-8a88-faf4bb15fc9c" processor="my-sql-database-system-api:all-users">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="30c01c75-8029-4ef7-83e3-5fb0ab8b548b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload10.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="all subscriptions" doc:id="88b04ad0-0f79-4c4f-a08e-30bf95fc0d13" processor="my-sql-database-system-api:all-subscriptions_1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="84e9eb8d-d5e3-4bf5-ad53-63fe9490e126" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="choice" doc:id="769d4fdf-1f72-4bc2-ad1a-cdb867aef9d0" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6f23b55d-29a4-465e-a3ef-4f02423c37eb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Logger-subscribed-users" doc:id="172b2863-93a1-4b92-9374-712ff5ee28c4" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1e3b4986-0692-4c4f-aaa8-4632230d3456" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="details for name" doc:id="9435f62f-1d4f-472e-a009-fc15f1fcb52e" processor="my-sql-database-system-api:individual-user">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c5c55bac-31fa-4dcc-960b-a3a013790fa9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload4.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="train running status" doc:id="70869aaa-1bfd-44bf-af6d-279e40663aab" processor="national-rail-system-api:train-running-status">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="43862b60-6643-4d16-8e80-67dafabbfe4a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger train status" doc:id="c931da49-d6e6-4028-a556-3320412e8512" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2e7a8521-eaf3-4c27-8181-8fc600dff8dd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="a4af8386-69ac-4487-8b67-b8e21dc88030" />
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to syncAlerts-prc-flow" doc:id="cca6accf-75b2-4812-8900-9b05109f9f6e" name="syncAlerts-prc-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="filter subscriptions" doc:id="67cf9a63-7f4c-4888-ab0d-1cfa30f22ed0" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2ceeb997-ccfc-4345-ac5d-18d62f9f7b92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-syncAlerts-prc-flowTest5" doc:id="b0c9c231-bb0a-4f4f-81d4-4e9f52d6be54" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="scheduler" doc:id="dc3f4cc9-d900-4fd2-bd0d-1f16c3aeeb14" processor="scheduler">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32caf255-d659-42e8-9166-4816ceb53e0b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="users with subscription" doc:id="b3f514de-f0f5-4c1b-8ea7-214606746eb8" processor="my-sql-database-system-api:all-users">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="30c01c75-8029-4ef7-83e3-5fb0ab8b548b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload10.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="all subscriptions" doc:id="c0c404c2-b0e4-4a7a-b27d-53788d5ef563" processor="my-sql-database-system-api:all-subscriptions_1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="84e9eb8d-d5e3-4bf5-ad53-63fe9490e126" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="choice" doc:id="5a6b937b-427b-4bbd-b4b5-a366c142efda" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6f23b55d-29a4-465e-a3ef-4f02423c37eb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Logger-subscribed-users" doc:id="d2080325-bdd7-4db0-b576-50c57da2d295" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1e3b4986-0692-4c4f-aaa8-4632230d3456" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="details for name" doc:id="474153ad-083d-400c-9258-9d41fb3029b0" processor="my-sql-database-system-api:individual-user">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c5c55bac-31fa-4dcc-960b-a3a013790fa9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload4.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="train running status" doc:id="87ac8b7a-beb5-4c6d-8756-b68c114d6581" processor="national-rail-system-api:train-running-status">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="43862b60-6643-4d16-8e80-67dafabbfe4a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger train status" doc:id="30eb3775-c8c8-48a4-a511-871fd0123d1e" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2e7a8521-eaf3-4c27-8181-8fc600dff8dd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload6.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="6fb4a926-36f2-4699-b6df-0e7461032f0c" />
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to syncAlerts-prc-flow" doc:id="697444f8-e83d-4164-871e-61a7e1a6d7b2" name="syncAlerts-prc-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="filter subscriptions" doc:id="a6a98075-a4e7-4981-bdeb-30a8bf73351c" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2ceeb997-ccfc-4345-ac5d-18d62f9f7b92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-syncAlerts-prc-flowTest6" doc:id="e4f43042-4d17-4c8b-944a-8a613f0f61c6" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="scheduler" doc:id="1a857f12-d13e-4dca-b029-6227ecc202bb" processor="scheduler">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32caf255-d659-42e8-9166-4816ceb53e0b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="users with subscription" doc:id="9889c702-1208-4837-80f4-8eb81a606a18" processor="my-sql-database-system-api:all-users">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="30c01c75-8029-4ef7-83e3-5fb0ab8b548b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload10.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="all subscriptions" doc:id="c06f708c-9575-4615-856d-76f26b9f0ffe" processor="my-sql-database-system-api:all-subscriptions_1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="84e9eb8d-d5e3-4bf5-ad53-63fe9490e126" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="choice" doc:id="21f779ed-fd3a-476f-b2a9-5bf8289d7bc2" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6f23b55d-29a4-465e-a3ef-4f02423c37eb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Logger-subscribed-users" doc:id="ba756c31-893b-4a37-923e-adb4a3c91814" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1e3b4986-0692-4c4f-aaa8-4632230d3456" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="details for name" doc:id="943f7aef-7db7-4484-8202-eb8ac6b16c42" processor="my-sql-database-system-api:individual-user">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c5c55bac-31fa-4dcc-960b-a3a013790fa9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload4.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="train running status" doc:id="756853e1-9225-49e4-94eb-4f43c5a5c427" processor="national-rail-system-api:train-running-status">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="43862b60-6643-4d16-8e80-67dafabbfe4a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger train status" doc:id="bb06a2bf-d481-4f1a-9942-a05f73d98658" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2e7a8521-eaf3-4c27-8181-8fc600dff8dd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload7.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="a9715029-5674-441e-9481-d374e37b9fc4" />
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to syncAlerts-prc-flow" doc:id="3c22a53f-f809-4df3-abc0-0c46d924d5e9" name="syncAlerts-prc-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="filter subscriptions" doc:id="62e89ef1-efe7-446f-bc95-a4bdece0299d" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2ceeb997-ccfc-4345-ac5d-18d62f9f7b92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-syncAlerts-prc-flowTest1" doc:id="db4c9db2-055c-40a2-ad57-081dc329bea4" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="scheduler" doc:id="4d128450-8b83-44f9-aa14-893b55d6a134" processor="scheduler">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32caf255-d659-42e8-9166-4816ceb53e0b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="users with subscription" doc:id="d68286aa-ded0-4f08-8f9e-4647da91329d" processor="my-sql-database-system-api:all-users">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="30c01c75-8029-4ef7-83e3-5fb0ab8b548b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload10.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="all subscriptions" doc:id="a3763357-62db-4e46-80d6-47eda9175202" processor="my-sql-database-system-api:all-subscriptions_1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="84e9eb8d-d5e3-4bf5-ad53-63fe9490e126" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="choice" doc:id="96452ee8-b8fe-404a-8a85-3a92eb333892" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6f23b55d-29a4-465e-a3ef-4f02423c37eb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Logger-subscribed-users" doc:id="20291c3b-1b6e-4a7e-8952-6c66a844ff92" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1e3b4986-0692-4c4f-aaa8-4632230d3456" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="details for name" doc:id="f493cace-4ef8-414f-afb7-efa4a0d30db5" processor="my-sql-database-system-api:individual-user">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c5c55bac-31fa-4dcc-960b-a3a013790fa9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload4.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="train running status" doc:id="69c870ed-2b43-4a91-9a3c-e5da9b37fa4c" processor="national-rail-system-api:train-running-status">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="43862b60-6643-4d16-8e80-67dafabbfe4a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload7.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger train status" doc:id="2566cab2-435b-4b6d-a9bd-21856bcdf13d" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2e7a8521-eaf3-4c27-8181-8fc600dff8dd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="256e8355-1da1-446e-8673-91ed56739889" />
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to syncAlerts-prc-flow" doc:id="44f708bd-e65d-459e-88ef-21632d05e984" name="syncAlerts-prc-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="filter subscriptions" doc:id="c18c5450-4335-4680-a7e3-3219347ee14d" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2ceeb997-ccfc-4345-ac5d-18d62f9f7b92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-syncAlerts-prc-flowTest2" doc:id="4bbe8a67-3093-4e8c-8785-f53734eea90e" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="scheduler" doc:id="9cab5a25-94d8-4694-a69a-012fecb49116" processor="scheduler">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32caf255-d659-42e8-9166-4816ceb53e0b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="users with subscription" doc:id="0e4a2d06-8a91-4ff6-8ded-35ae2474292b" processor="my-sql-database-system-api:all-users">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="30c01c75-8029-4ef7-83e3-5fb0ab8b548b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload10.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="all subscriptions" doc:id="4a129e0c-2590-4b31-ba38-496ff0b967ff" processor="my-sql-database-system-api:all-subscriptions_1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="84e9eb8d-d5e3-4bf5-ad53-63fe9490e126" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="choice" doc:id="321886cb-4409-484e-8c37-5d61266c598b" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6f23b55d-29a4-465e-a3ef-4f02423c37eb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Logger-subscribed-users" doc:id="a030840e-9c4c-40b4-b9f6-9a05da2ad258" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1e3b4986-0692-4c4f-aaa8-4632230d3456" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="details for name" doc:id="8385bd72-8f77-444c-8382-184f6025dcf7" processor="my-sql-database-system-api:individual-user">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c5c55bac-31fa-4dcc-960b-a3a013790fa9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload4.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="train running status" doc:id="d73938d4-7320-4695-91eb-b0d7c148fe55" processor="national-rail-system-api:train-running-status">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="43862b60-6643-4d16-8e80-67dafabbfe4a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload6.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger train status" doc:id="a250e009-68c4-4af3-abeb-822b32f1332c" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2e7a8521-eaf3-4c27-8181-8fc600dff8dd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="5572be4c-a0fd-473c-9866-a863e6e6e160" />
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to syncAlerts-prc-flow" doc:id="28db4397-c4e7-459b-9a85-e2d73557d141" name="syncAlerts-prc-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="filter subscriptions" doc:id="e34de8a4-9f20-4193-ab4f-0530c1e4cc0f" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2ceeb997-ccfc-4345-ac5d-18d62f9f7b92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-syncAlerts-prc-flowTest3" doc:id="2251e06e-75ee-4530-8236-12b9fb3c655e" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="scheduler" doc:id="9bb7d72a-c17d-4a39-b8af-0c68b578455f" processor="scheduler">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32caf255-d659-42e8-9166-4816ceb53e0b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="users with subscription" doc:id="7a697804-2348-4cbb-8fe3-b32370ed0729" processor="my-sql-database-system-api:all-users">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="30c01c75-8029-4ef7-83e3-5fb0ab8b548b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload10.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="all subscriptions" doc:id="83009ba6-68d2-4c9a-8a4f-abbb72aa7c17" processor="my-sql-database-system-api:all-subscriptions_1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="84e9eb8d-d5e3-4bf5-ad53-63fe9490e126" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="choice" doc:id="99116cf0-cbdb-44ce-bce2-bc30e30bb5f0" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6f23b55d-29a4-465e-a3ef-4f02423c37eb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Logger-subscribed-users" doc:id="4303777f-489c-4335-93c8-2afc04103356" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1e3b4986-0692-4c4f-aaa8-4632230d3456" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="details for name" doc:id="2e98b418-61ae-4afd-9233-e2a32afc8cf7" processor="my-sql-database-system-api:individual-user">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c5c55bac-31fa-4dcc-960b-a3a013790fa9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload4.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="train running status" doc:id="d8704cba-5dee-4869-acb5-e99be1bba73d" processor="national-rail-system-api:train-running-status">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="43862b60-6643-4d16-8e80-67dafabbfe4a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger train status" doc:id="91a182f2-149a-422b-b886-b69dd54b4015" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2e7a8521-eaf3-4c27-8181-8fc600dff8dd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="901e10e0-1dd3-467e-bf6c-248490b856aa" />
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to syncAlerts-prc-flow" doc:id="a67c4191-2af6-4aeb-b128-c89cd3d36e43" name="syncAlerts-prc-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="filter subscriptions" doc:id="ac6bb0cb-9533-4967-a428-04d700664d44" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2ceeb997-ccfc-4345-ac5d-18d62f9f7b92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-syncAlerts-prc-flowTest4" doc:id="00426b44-fc6c-4474-9bc2-b6adbe1126ef" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="scheduler" doc:id="a4480c9d-fea3-4a24-b8fc-7ea05eb005f8" processor="scheduler">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32caf255-d659-42e8-9166-4816ceb53e0b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="users with subscription" doc:id="bd1d8a4f-37d7-4d81-a988-7d79155e2276" processor="my-sql-database-system-api:all-users">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="30c01c75-8029-4ef7-83e3-5fb0ab8b548b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload10.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="all subscriptions" doc:id="4179913c-8118-41b2-9e23-d2b801da38dd" processor="my-sql-database-system-api:all-subscriptions_1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="84e9eb8d-d5e3-4bf5-ad53-63fe9490e126" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload12.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="choice" doc:id="d59c1d61-8733-4d7d-ac9d-0a1a5b374f67" processor="choice">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6f23b55d-29a4-465e-a3ef-4f02423c37eb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Logger-subscribed-users" doc:id="49017600-f9bc-4d4a-adf2-61ce5394e134" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1e3b4986-0692-4c4f-aaa8-4632230d3456" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="b5944abd-916c-4865-91b8-015a838a3c50" />
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to syncAlerts-prc-flow" doc:id="ac1ed480-4abe-4887-9485-8e5ee34926b1" name="syncAlerts-prc-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="filter subscriptions" doc:id="afc289e8-d404-4966-8bfe-1f69083994f3" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2ceeb997-ccfc-4345-ac5d-18d62f9f7b92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-sendAlerts-prc-flowTest" doc:id="c75a891f-7ac5-45ef-9259-60ddc4056574" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock vm listener" doc:id="e593f3cf-5ae4-4793-a752-85a7d847f941" processor="vm:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="58c719a1-b083-4960-b2a5-1de752e68dc3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger delayed trains" doc:id="00cca97a-5b0b-4a10-8539-ae63f9f7e827" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7e8b97ca-67cb-4092-a57f-6dde8e149531" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload9.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock send email" doc:id="ccffbac8-bb14-46fe-be7c-b4c677dfeff4" processor="email:send">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="04a12b01-4d4e-441f-a1f5-0cfa73f4d4fe" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="payload" doc:id="c30b2109-889a-46d3-9dac-d01c03dfc9af" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" encoding="UTF-8" mediaType="application/json" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="8a9abad2-cfae-4e9c-963d-30705fc02d83" >
+				<flow-ref doc:name="Flow-ref to sendAlerts-prc-flow" doc:id="d6b9a931-8bdb-4380-83d5-a2d3992da214" name="sendAlerts-prc-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6d1b54a9-1051-46f7-9152-eb8c8d587023" >
+						<logger level="INFO" doc:name="Logger" doc:id="feffb294-233e-4891-b157-ffa8564cc2b6" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="2ab840e5-069c-463b-a890-43f019083aa9" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4a6d8f19-44f0-4447-a20b-67676ab306d0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-sendAlerts-prc-flowTest1" doc:id="27a5ba67-6558-44be-b6e4-ba1b9378188e" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock vm listener" doc:id="9b3dc5b9-aaca-435d-a14f-f7aeaea9bf93" processor="vm:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="58c719a1-b083-4960-b2a5-1de752e68dc3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger delayed trains" doc:id="91a4d8b0-794c-481b-8b0b-eb811451c7e1" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7e8b97ca-67cb-4092-a57f-6dde8e149531" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload13.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock send email" doc:id="83378a37-5dc8-4ce9-a6bf-07bd60887cc6" processor="email:send">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="04a12b01-4d4e-441f-a1f5-0cfa73f4d4fe" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="payload" doc:id="a780361d-fe3d-4d65-a8bc-d5d65cda9f9a" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" encoding="UTF-8" mediaType="application/json" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="527732a8-6e81-48e8-a57a-0b68437c5f3f" >
+				<flow-ref doc:name="Flow-ref to sendAlerts-prc-flow" doc:id="b5275a75-2ce6-4049-8bfa-10a3c8390150" name="sendAlerts-prc-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="67564bbf-3b51-423e-9585-24a9469197bf" >
+						<logger level="INFO" doc:name="Logger" doc:id="4c0f8ff6-cad0-4598-9a0d-ea8307173ee0" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="8ed31496-8845-4688-873f-e001e90c4a80" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4a6d8f19-44f0-4447-a20b-67676ab306d0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="syncAlerts-prc-api-test-suite-sendAlerts-prc-flowTest2" doc:id="2fd16b06-b458-45e6-8ba3-10a69e827977" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock vm listener" doc:id="47fffc6e-1b4e-49f5-a06b-12154b7c5a6b" processor="vm:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="58c719a1-b083-4960-b2a5-1de752e68dc3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock logger delayed trains" doc:id="8fb2aee3-eecb-4447-8b2b-268fecaaedc6" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7e8b97ca-67cb-4092-a57f-6dde8e149531" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload9.dwl')]" mediaType="application/json" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock save alerts" doc:id="c7e83bfe-1498-487b-8c1d-36d175bbe845" processor="my-sql-database-system-api:save-train-alerts">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="90bfb713-8259-43df-94d9-112ea7313b2b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="payload" doc:id="5fa98ec2-f4d2-4395-8c21-640160df02ce" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://syncAlerts\mock_payload5.dwl')]" encoding="UTF-8" mediaType="application/json" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="6b4ba159-ae51-41c3-b274-1d63100c7683" >
+				<flow-ref doc:name="Flow-ref to sendAlerts-prc-flow" doc:id="180119e2-6d29-4dfc-b426-dd3cb0a988eb" name="sendAlerts-prc-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="09c82bf5-115d-4bbb-9c78-5fb02f713338" >
+						<logger level="INFO" doc:name="Logger" doc:id="5a284da2-0bc6-4213-801f-7bfb1367f1d5" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="7672f9a0-213e-4039-9660-da6d8422f98f" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4a6d8f19-44f0-4447-a20b-67676ab306d0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+</mule>

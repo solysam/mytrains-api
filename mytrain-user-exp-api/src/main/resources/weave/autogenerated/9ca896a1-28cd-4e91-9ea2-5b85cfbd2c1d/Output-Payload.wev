@@ -1,0 +1,14 @@
+%dw 2.0
+
+type auto_9ca896a1_28cd_4e91_9ea2_5b85cfbd2c1d_Output_Payload = {
+  firstName: String, 
+  lastName: String, 
+  mobilePhone: String, 
+  created: Any, 
+  userID: String, 
+  updated: Any, 
+  email: String, 
+  status: Number, 
+  _?: Any
+}
+

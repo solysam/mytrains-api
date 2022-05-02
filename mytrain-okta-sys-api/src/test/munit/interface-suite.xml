@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="interface-suite.xml" />
+	<munit:test name="okta-sys-api-main-test" doc:id="a11724fd-9c85-499d-90dd-f8d6c989b8f1" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="6b4450b8-c8f8-4677-847e-84bff2afed73" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6045e6a6-8d7f-4422-aa20-d1cd9c392d52" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://oktasysapimaintest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://oktasysapimaintest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="32003c90-d1e0-4915-abfc-d26921f1e699" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://oktasysapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://oktasysapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to okta-sys-api-main" doc:id="b753b575-babf-488c-9fa8-19683c282686" name="okta-sys-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="766632e3-e037-4c1c-bf6f-258119ea26e6" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import oktasysapimaintest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="post:\login:application\json:okta-sys-api-config-test" doc:id="f908a642-7eda-403e-b2c8-fca2357ac8f9" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Flow Reference" doc:id="57bc8c4e-6b98-4bc3-b1aa-cfc8cdda18aa" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="e25d1818-4f07-4c09-b3a8-753caad55e6b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="47199240-756d-4636-a19c-2b494439b114" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\login:application\json:okta-sys-api-config" doc:id="05cc181c-a33e-4078-bb27-8d1d5692e349" name="post:\login:application\json:okta-sys-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="4589f916-c1ae-44fc-86e9-ce2fd1699e69" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postloginapplicationjsonoktasysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="post:\users:application\json:okta-sys-api-config-test" doc:id="487b911e-59a9-4307-9fd1-fe9a72a4fe0d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Flow Reference" doc:id="b91ffa94-88b3-4733-b298-71e4ab4a00ac" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="87dded4a-359e-4630-bcc4-fd059e497e9a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="e36e1e02-ef3a-4b4b-81f9-bd9419353d65" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\users:application\json:okta-sys-api-config" doc:id="ea824826-cc2a-48d3-8d43-eed367003672" name="post:\users:application\json:okta-sys-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="2d263e4b-25c7-4fef-9425-7deca27b4c84" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postusersapplicationjsonoktasysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="post:\resetPassword:application\json:okta-sys-api-config-test" doc:id="113298d0-45ab-4330-9a4b-e8e2885bc793" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Flow Reference" doc:id="e024710e-5be1-4685-84fd-56ecdf28c5c3" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="970e52cf-ef74-4df3-9a11-73a47009bcca" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\mock_variable_1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="a2253070-25e9-49af-bdef-3d52deabcbbf" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\resetPassword:application\json:okta-sys-api-config" doc:id="74703638-9bb7-438b-8c62-4ddc391bfb56" name="post:\resetPassword:application\json:okta-sys-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="6c28c639-76b1-45b0-b1ee-d124cc1e66ef" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postresetPasswordapplicationjsonoktasysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

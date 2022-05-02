@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="retrieve-alert-subFlow" doc:id="0cbe9375-e678-49b2-bff7-654676c1993b" >
+		<db:select doc:name="alert with ID" doc:id="80aed2fe-36f3-4e28-ac99-3664dd66c936" config-ref="Database_Config" queryTimeout="20">
+			<db:sql><![CDATA[SELECT * 
+FROM nrs.ALERT
+WHERE SUBSCRIPTION_ID = :subID AND ALERT_TRANSACTION_ID = :alertID;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+'subID': attributes.uriParams.subscription_id,
+'alertID': attributes.uriParams.alert_id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="alert" doc:id="3a776338-13ac-4fdf-ba57-d10db8e4a61a">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	alertID: payload01.ALERT_TRANSACTION_ID,
+	subscriptionID: payload01.SUBSCRIPTION_ID,
+	delayType: payload01.DELAY_TYPE_FLAG,
+	notificationStatus: payload01.NOTIFICATION_STATUS default "",
+	notificationFailureDetail: payload01.NOTIFICATION_FAILURE_DETAIL default "",
+	delayedBy: payload01.DELAY_TIME default 0,
+	created: payload01.CREATION_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="retrieve-alerts-subFlow" doc:id="3177d0f3-fb8c-4793-921a-235da36d04b1" >
+		<db:select doc:name="All alerts" doc:id="c4867184-8daa-4ba2-a5a3-1d834fa58d32" config-ref="Database_Config" queryTimeout="20">
+			<db:sql><![CDATA[SELECT * 
+FROM nrs.ALERT
+WHERE SUBSCRIPTION_ID = :subID;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+'subID': attributes.uriParams.subscription_id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="alerts" doc:id="aed3f0aa-0fe6-41f1-9aa5-335f1851be58">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	alertID: payload01.ALERT_TRANSACTION_ID,
+	subscriptionID: payload01.SUBSCRIPTION_ID,
+	delayType: payload01.DELAY_TYPE_FLAG,
+	notificationStatus: payload01.NOTIFICATION_STATUS default "",
+	notificationFailureDetail: payload01.NOTIFICATION_FAILURE_DETAIL default "",
+	delayedBy: payload01.DELAY_TIME default 0,
+	created: payload01.CREATION_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"}
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+	</sub-flow>
+	<sub-flow name="retrieve-subscription-subFlow" doc:id="ae39ff67-c8d3-4460-9448-6a3105066da3">
+		<db:select doc:name="subscription with ID" doc:id="641172a4-3d4e-4a66-9b8e-4b729d30a948" config-ref="Database_Config" queryTimeout="1000">
+			<db:sql><![CDATA[SELECT * 
+FROM nrs.SUBSCRIPTION
+WHERE USER_ID = :ID AND SUBSCRIPTION_ID = :subID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+'ID': attributes.uriParams.user_id,
+'subID': attributes.uriParams.subscription_id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="subscription" doc:id="f7916bc3-f1f6-46ac-8c21-a64b76c40cde">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	subscriptionID: payload01.SUBSCRIPTION_ID,
+	userID: payload01.USER_ID,
+	status: payload01.STATUS_TYPE_ID,
+	from: payload01.SOURCE_LOCATION,
+	to: payload01.DESTINATION_LOCATION,
+	startTime: payload01.FROM_TIME as DateTime as String {format: "HH:mm:ss"},
+	endTime: payload01.TO_TIME as DateTime as String {format: "HH:mm:ss"},
+	advanceNotify: payload01.ADVANCE_NOTIFY_TIME_MIN default 0,
+	created: payload01.CREATION_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+	updated: payload01.UPDATED_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="retrieve-subscriptions-subFlow" doc:id="a93a526f-2784-4acf-99cc-39a22e0b0e65" >
+		<db:select doc:name="All subscriptions" doc:id="4c8aa805-f168-48a6-8157-52299b2dc839" config-ref="Database_Config" queryTimeout="1000">
+			<db:sql><![CDATA[SELECT * 
+FROM nrs.SUBSCRIPTION
+WHERE USER_ID = :ID;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{'ID': attributes.uriParams.user_id}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="subscriptions" doc:id="943d2976-c0b3-4f16-be43-a47524c0c50d">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	subscriptionID: payload01.SUBSCRIPTION_ID,
+	userID: payload01.USER_ID,
+	status: payload01.STATUS_TYPE_ID,
+	from: payload01.SOURCE_LOCATION,
+	to: payload01.DESTINATION_LOCATION,
+	startTime: payload01.FROM_TIME as DateTime as String {format: "HH:mm:ss"},
+	endTime: payload01.TO_TIME as DateTime as String {format: "HH:mm:ss"},
+	advanceNotify: payload01.ADVANCE_NOTIFY_TIME_MIN default 0,
+	created: payload01.CREATION_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+	updated: payload01.UPDATED_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+	</sub-flow>
+	<flow name="retrieve-usersForAdmin-flow" doc:id="cf0aba4e-4b27-468e-b80b-a1810371c72d">
+		<json-logger:logger doc:name="retrieve-usersForAdmin-input" doc:id="0ef04916-3602-4bba-902e-19bc0475519a" config-ref="JSON_Logger_Config" message="retrieve-usersForAdmin-input"/>
+		<db:select doc:name="All users" doc:id="86037883-d18c-414e-aa9d-b9a4e81c4c7b" config-ref="Database_Config" queryTimeout="20">
+			<db:sql ><![CDATA[SELECT * FROM nrs.USER;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="users" doc:id="8caa8e9c-dd06-45e5-8d22-6e33b4522983">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	userID: payload01.USER_ID,
+	firstName: payload01.FIRST_NAME,
+	lastName: payload01.LAST_NAME,
+	mobilePhone: payload01.PHONE_NUMBER,
+	email: payload01.EMAIL_ID,
+	status:payload01.STATUS_TYPE_ID,
+	created: payload01.CREATED_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+	updated: payload01.UPDATED_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"}
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="retrieve-usersForAdmin-output" doc:id="1d2d10e0-e762-470f-b0ab-e3aaf1931b09" config-ref="JSON_Logger_Config" message="retrieve-usersForAdmin-output"/>
+	</flow>
+	<flow name="retrieve-userForAdmin-flow" doc:id="fe0d214f-0846-4b80-a9ad-0e165ebdbd73">
+		<json-logger:logger doc:name="retrieve-userForAdmin-input" doc:id="b152498d-73d5-454f-a835-83273663fb31" config-ref="JSON_Logger_Config" message="retrieve-userForAdmin-input"/>
+		<db:select doc:name="user with ID" doc:id="381454e5-b0ee-4355-8fe4-8fe7159ef566" config-ref="Database_Config" queryTimeout="20">
+			<db:sql ><![CDATA[SELECT * 
+FROM nrs.USER 
+WHERE USER_ID = :ID;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'ID': attributes.uriParams.user_id}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="user" doc:id="8c8fad67-13d9-428a-954a-73049f3008ae" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	userID: payload01.USER_ID,
+	firstName: payload01.FIRST_NAME,
+	lastName: payload01.LAST_NAME,
+	mobilePhone: payload01.PHONE_NUMBER,
+	email: payload01.EMAIL_ID,
+	status:payload01.STATUS_TYPE_ID,
+	created: payload01.CREATED_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+	updated: payload01.UPDATED_TIMESTAMP as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="retrieve-userForAdmin-output" doc:id="30bd9a97-6a5e-4d5f-b3b6-321e49ca3c59" config-ref="JSON_Logger_Config" message="retrieve-userForAdmin-output"/>
+	</flow>
+	<flow name="retrieve-subscriptionsForAdmin-flow" doc:id="1f208786-9c1a-4891-9e12-20ab9028ddb8">
+		<json-logger:logger doc:name="retrieve-subscriptionsForAdmin-input" doc:id="e4b987cf-ac71-4b59-976e-0f1b234d4b91" config-ref="JSON_Logger_Config" message="retrieve-subscriptionsForAdmin-input"/>
+		<flow-ref doc:name="get-subscriptions" doc:id="b3bf97d9-6184-4195-8593-431a9fc7850e" name="retrieve-subscriptions-subFlow" />
+		<json-logger:logger doc:name="retrieve-subscriptionsForAdmin-output" doc:id="44dd8b50-18b6-44e1-8563-b2d93e109535" config-ref="JSON_Logger_Config" message="retrieve-subscriptionsForAdmin-output"/>
+	</flow>
+	<flow name="retrieve-subscriptionForAdmin-flow" doc:id="c4f38299-afbb-4998-a48f-fe2625867e43" >
+		<json-logger:logger doc:name="retrieve-subscriptionForAdmin-input" doc:id="15f8ad5a-6e17-4fe1-b92f-b36f5f655c9e" config-ref="JSON_Logger_Config" message="retrieve-subscriptionForAdmin-input"/>
+		<flow-ref doc:name="get-subscription" doc:id="c04a04bd-1b1f-4a1f-87b3-8fffbe786c70" name="retrieve-subscription-subFlow" />
+		<json-logger:logger doc:name="retrieve-subscriptionForAdmin-output" doc:id="d60f352a-ef09-47c9-a488-4ff24fb21f4a" config-ref="JSON_Logger_Config" message="retrieve-subscriptionForAdmin-output"/>
+	</flow>
+	<flow name="retrieve-alertsForAdmin-flow" doc:id="c04139e2-f02c-48c1-9372-8bbf631a0358">
+		<json-logger:logger doc:name="retrieve-alertsForAdmin-input" doc:id="bd0b9a69-064c-4bb4-b2cb-fa6db4f49cc1" config-ref="JSON_Logger_Config" message="retrieve-alertsForAdmin-input"/>
+		<flow-ref doc:name="get-alerts" doc:id="8abf061c-876e-45de-9b99-ed30e8da853b" name="retrieve-alerts-subFlow" />
+		<json-logger:logger doc:name="retrieve-alertsForAdmin-output" doc:id="bf7c374e-728e-4c0f-b666-e1a9737032f0" config-ref="JSON_Logger_Config" message="retrieve-alertsForAdmin-output"/>
+	</flow>
+	<flow name="retrieve-alertForAdmin-flow" doc:id="41b820ae-5c9b-4874-be77-d55bad84da06">
+		<json-logger:logger doc:name="retrieve-alertForAdmin-input" doc:id="23e63530-072d-45b4-ace7-29048647a612" config-ref="JSON_Logger_Config" message="retrieve-alertForAdmin-input"/>
+		<flow-ref doc:name="get-alert" doc:id="ff8ccebe-6d6b-4b30-8a02-33ae21273236" name="retrieve-alert-subFlow" />
+		<json-logger:logger doc:name="retrieve-alertForAdmin-output" doc:id="3517e289-79dd-4a8d-8562-e30f7e1b10b5" config-ref="JSON_Logger_Config" message="retrieve-alertForAdmin-output"/>
+	</flow>
+	<flow name="retrieve-subscriptionsForUser-flow" doc:id="bf796cd2-4607-4250-87af-348238545355">
+		<json-logger:logger doc:name="retrieve-subscriptionsForUser-input" doc:id="592f59bb-c369-4493-9232-a518ae972571" config-ref="JSON_Logger_Config" message="retrieve-subscriptionsForUser-input"/>
+		<flow-ref doc:name="get-subscriptions" doc:id="301b25ef-2d30-4a48-8a8c-42f8f0f17db0" name="retrieve-subscriptions-subFlow"/>
+		<json-logger:logger doc:name="retrieve-subscriptionsForUser-output" doc:id="bbebfd88-2eea-4354-bd9b-ec4fc17918e6" config-ref="JSON_Logger_Config" message="retrieve-subscriptionsForUser-output"/>
+	</flow>
+	<flow name="retrieve-subscriptionForUser-flow" doc:id="a0f11bbf-6a32-446c-8a1e-1145de112fdc" >
+		<json-logger:logger doc:name="retrieve-subscriptionForUser-input" doc:id="2c62ba68-0e53-48fc-bbb4-ff185d35228e" config-ref="JSON_Logger_Config" message="retrieve-subscriptionForUser-input"/>
+		<flow-ref doc:name="get-subscription" doc:id="0a79d5d7-57ba-4d65-a590-1c1119fd9b05" name="retrieve-subscription-subFlow"/>
+		<json-logger:logger doc:name="retrieve-subscriptionForUser-output" doc:id="c585968a-91a6-4746-b15d-4ecd98579a57" config-ref="JSON_Logger_Config" message="retrieve-subscriptionForUser-output"/>
+	</flow>
+	<flow name="retrieve-alertsForUser-flow" doc:id="137c517d-5f9c-4f5e-910a-eaffa63082d0" >
+		<json-logger:logger doc:name="retrieve-alertsForUser-input" doc:id="9a2bd599-c584-4707-bfda-b1c469c3fac4" config-ref="JSON_Logger_Config" message="retrieve-alertsForUser-input"/>
+		<flow-ref doc:name="get-alerts" doc:id="6064a843-c56a-43a1-bc60-5b5becf89196" name="retrieve-alerts-subFlow"/>
+		<json-logger:logger doc:name="retrieve-alertsForUser-output" doc:id="7fad4dc5-48fe-457a-8f6d-7929c72b1e8d" config-ref="JSON_Logger_Config" message="retrieve-alertsForUser-output"/>
+	</flow>
+	<flow name="retrieve-alertForUser-flow" doc:id="fe6577f5-bdb2-46c7-bb50-3f7a2f37c291">
+		<json-logger:logger doc:name="retrieve-alertForUser-input" doc:id="8d6e08eb-b805-4b0b-a8ef-5dc0bede3351" config-ref="JSON_Logger_Config" message="retrieve-alertForUser-input"/>
+		<flow-ref doc:name="get-alert" doc:id="7f8b1879-b9fb-478c-9134-a9f35e8af69e" name="retrieve-alert-subFlow"/>
+		<json-logger:logger doc:name="retrieve-alertForUser-output" doc:id="690dfeac-4533-4b37-9f7e-5a636cbdd224" config-ref="JSON_Logger_Config" message="retrieve-alertForUser-output"/>
+	</flow>
+	<flow name="save-userDetails-flow" doc:id="a35b757e-57d9-4d51-8832-6bbca02c97e9">
+		<json-logger:logger doc:name="save-userDetails-input" doc:id="009410b3-684c-444f-aa6b-0e258fa8abe9" config-ref="JSON_Logger_Config" message="save-userDetails-input"/>
+		<set-variable value="#[payload.userID]" doc:name="Set Variable" doc:id="69ef267b-6531-4ce0-81fc-bc4ec440a780" variableName="userID"/>
+		<db:insert doc:name="user details" doc:id="a454e016-c37b-44f8-9c1e-88493c7e0764" config-ref="Database_Config" queryTimeout="20">
+			<db:sql ><![CDATA[INSERT INTO nrs.USER (USER_ID, EMAIL_ID, STATUS_TYPE_ID, FIRST_NAME, LAST_NAME, PHONE_NUMBER, CREATED_TIMESTAMP, UPDATED_TIMESTAMP)
+VALUES (:userID, :emailID, :statusType, :firstName, :lastName, :phoneNumber, :created, :updated);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'userID' : payload.userID,
+	'emailID' : payload.email,
+	'statusType' : payload.status,
+	'firstName' : payload.firstName,
+	'lastName' : payload.lastName,
+	'phoneNumber' : payload.mobilePhone,
+	'created' : payload.created,
+	'updated' : payload.updated
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="unique user ID" doc:id="74981a58-2ed9-48bb-abcd-769e2b3da7b2">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  userID: vars.userID
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="save-userDetails-output" doc:id="f2821e67-0eed-40e0-ad99-0d4c045490c3" config-ref="JSON_Logger_Config" message="save-userDetails-output"/>
+	</flow>
+	<flow name="save-alertSubscription-flow" doc:id="623efd3f-28a9-4e12-8b0e-ab2ef15ff919">
+		<json-logger:logger doc:name="save-alertSubscription-input" doc:id="2a98fa62-456f-4bac-9abd-32eb24b09d21" config-ref="JSON_Logger_Config" message="save-alertSubscription-input"/>
+		<set-variable value="#[payload.userID]" doc:name="Set Variable" doc:id="bfdd6ea8-0560-41ab-950e-25c38eb9247c" variableName="userID"/>
+		<db:insert doc:name="alert subscription details" doc:id="b10ad504-89a9-4a21-8862-215b71e86f2e" config-ref="Database_Config" queryTimeout="20">
+			<db:sql ><![CDATA[INSERT INTO nrs.SUBSCRIPTION (USER_ID, STATUS_TYPE_ID, SOURCE_LOCATION, DESTINATION_LOCATION, FROM_TIME, TO_TIME, ADVANCE_NOTIFY_TIME_MIN, CREATION_TIMESTAMP, UPDATED_TIMESTAMP)
+VALUES (:userID, :status, :source, :destination, :fromTime, :toTime, :advNotify, :created, :updated);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	userID : payload.userID,
+	status : payload.status,
+	source : payload.from,
+	destination : payload.to,
+	fromTime : payload.startTime,
+	toTime : payload.endTime,
+	advNotify : payload.advanceNotify,
+	created : payload.created,
+	updated : payload.updated
+}]]]></db:input-parameters>
+		</db:insert>
+		<db:update doc:name="user subscription details" doc:id="5513904b-e0d8-41aa-9ea9-d7d397fa3cb0" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE nrs.USER SET STATUS_TYPE_ID = 1 WHERE USER_ID = :userID]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	userID: vars.userID
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="unique subscription ID" doc:id="ecda8155-f0ab-4965-807a-865b8fc40935">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Subscription successful"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="save-alertSubscription-output" doc:id="6db74ab4-f9a9-47db-a507-a2b381985072" config-ref="JSON_Logger_Config" message="save-alertSubscription-output"/>
+	</flow>
+	<flow name="save-alert-flow" doc:id="ccff7cac-809b-470f-99e0-aba746dbee7f" >
+		<json-logger:logger doc:name="save-alert-input" doc:id="11c1da6b-cd04-4a56-af6b-35035cda0d20" config-ref="JSON_Logger_Config" message="save-alert-input"/>
+		<db:insert doc:name="train alerts" doc:id="9a57c1a2-a0a3-4624-87b2-f2eda7ba8578" config-ref="Database_Config" queryTimeout="20">
+			<db:sql ><![CDATA[INSERT INTO nrs.ALERT (SUBSCRIPTION_ID, DELAY_TYPE_FLAG, NOTIFICATION_STATUS, NOTIFICATION_FAILURE_DETAIL, DELAY_TIME, CREATION_TIMESTAMP)
+VALUES (:subID, :delayType, :notifyStat, :notifyFailDetail, :delayTime, :created);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	subID : payload.subscriptionID,
+	delayType : payload.delayType,
+	notifyStat : payload.notificationStatus,
+	notifyFailDetail : payload.notificationFailureDetail,
+	delayTime : payload.delayedBy,
+	created : payload.created
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="unique alert ID" doc:id="c2e155ab-73e4-4d29-bb59-4dc2db3ec9d2">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Alert saved"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="save-alert-output" doc:id="108329c5-5ad1-4f26-b66f-10eeea0ea28f" config-ref="JSON_Logger_Config" message="save-alert-output"/>
+	</flow>
+</mule>

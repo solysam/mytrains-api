@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_6d395123_1462_42ea_a348_8e40c534eb2f_Output_Payload = Array<{|  subscriptionID: Number,   from: String,   to: String,   STA: String,   ETA: String,   delayReason: String,   timeStamp: String,   status: String {"format": "HH:mm"}|}>
+

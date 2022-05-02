@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="error-suite.xml" />
+
+	<munit:test name="user-exp-api-main-APIKIT:BAD_REQUESTerror-test" doc:id="20c1fff1-59f9-462e-a305-14c945c668c6" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="bb13d748-19be-4ad1-ab17-2fff359a052c" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="user-exp-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="52dd09d7-5476-4d4c-a8d5-91a5a41bb9e0" >
+				<munit:payload value='"" as Binary {base: "64"}' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="28e70d8b-1782-46d2-96a0-03c1a20a8e81" >
+				<flow-ref doc:name="Flow-ref to user-exp-api-main" doc:id="26c9a0ce-45b1-499c-823c-9b1f86592c03" name="user-exp-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="1f20c36f-b16a-421c-9ea3-d473d06b7579" >
+						<logger level="INFO" doc:name="Logger" doc:id="85cdea23-777d-4534-9a68-21b479fac8be" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="46c523ba-8705-4658-84db-98283a40e0d6" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="user-exp-api-main-APIKIT:NOT_FOUNDerror-test" doc:id="fc118627-6cb8-413b-9f45-44aa4b1ef5db" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="32b20560-8938-483d-a275-a166ae8e163b" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="user-exp-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="eb4efd34-cfcf-43c8-aa2d-7c7bdc565104" >
+				<munit:payload value='"" as Binary {base: "64"}' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="bcbd8ae8-b786-4982-98de-9678db074a4d" >
+				<flow-ref doc:name="Flow-ref to user-exp-api-main" doc:id="02c3d13d-26e2-43fc-ba42-739e0fff18d8" name="user-exp-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6c6a44e0-0ca1-4cf6-a48e-289f9dd548b9" >
+						<logger level="INFO" doc:name="Logger" doc:id="076acf8b-803d-47c6-bb50-f8e337dc773c" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="c4efda2c-5847-4857-aaf1-f47bb148c2d3" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="user-exp-api-main-APIKIT:METHOD_NOT_ALLOWEDerror-test" doc:id="b17ede2f-8384-4d71-809e-3383f03f2e79" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="edb0b0c4-1e7b-40ea-9422-27aafef7bc65" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="user-exp-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="783784fb-1141-466e-9456-022098e3247f" >
+				<munit:payload value='"" as Binary {base: "64"}' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="78642b99-5826-444a-bcb6-9db6b76c89c6" >
+				<flow-ref doc:name="Flow-ref to user-exp-api-main" doc:id="729dfb8d-1af3-4c81-89d0-211c1a842ad9" name="user-exp-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6e4ddb3d-5687-422b-8b35-528e9f6a6cc3" >
+						<logger level="INFO" doc:name="Logger" doc:id="be0c33b2-ef36-4c82-ba91-6c6f7403c6a5" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="398423d6-35de-4ff4-b084-0c7ac2b3d59e" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="user-exp-api-main-APIKIT:NOT_ACCEPTABLEerror-test" doc:id="5bc1b652-aadd-4a9e-9cb8-d697c7070d02" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="8d94e244-cdb8-4457-82e3-25c04335bfbc" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="user-exp-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="5ac7a569-329f-477c-99b0-d3f386930321" >
+				<munit:payload value='"" as Binary {base: "64"}' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="ec13e2e2-a24d-42f5-aada-80b25efd5c75" >
+				<flow-ref doc:name="Flow-ref to user-exp-api-main" doc:id="b68f8d75-2d2c-4433-8c0a-f8961742a229" name="user-exp-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d55335af-4725-4d87-a244-cc94e2ef267e" >
+						<logger level="INFO" doc:name="Logger" doc:id="b7d2f13f-456a-4781-8692-b0976c1bcf0d" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="70e8aaa5-a5db-47b8-8540-bdf951d8ab43" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="user-api-main-APIKIT:UNSUPPORTED_MEDIA_TYPEerror-test" doc:id="1e0d4829-6c5a-4b3f-bb5d-cd9f3a8f3415" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="26d028ac-b2b0-4a5d-9b60-d2d9cc69803b" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="user-exp-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="c3796762-3f33-4385-8f2b-833d3775534d" >
+				<munit:payload value='"" as Binary {base: "64"}' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="b6cabbf0-d9df-4786-9510-fc1ddd01ce84" >
+				<flow-ref doc:name="Flow-ref to user-exp-api-main" doc:id="54c77c02-04e8-434b-a12f-3a732203a0fb" name="user-exp-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ceea8a60-734a-479c-8172-6a6973697d9c" >
+						<logger level="INFO" doc:name="Logger" doc:id="cc5ab382-f7aa-4050-9e64-fb97b035e6ae" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="f347b4fe-a79a-45cb-8443-6f4f3baafc8f" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="user-exp-api-main-APIKIT:NOT_IMPLEMENTEDerror-test" doc:id="0e9dd3f4-4093-412d-9f66-c4f43aae9f67" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="e1c79af6-a118-41e7-a0d5-d02026c2dc17" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="user-exp-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="25691d72-091d-476f-8f9b-7ec9999315b2" >
+				<munit:payload value='"" as Binary {base: "64"}' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="5d26f2ed-3674-463f-bae4-f5656aedb240" >
+				<flow-ref doc:name="Flow-ref to user-exp-api-main" doc:id="32dd7ab7-1f84-4554-a310-ac4bf36dc59c" name="user-exp-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="1fef1955-239a-4542-ae4f-169d12147b40" >
+						<logger level="INFO" doc:name="Logger" doc:id="652413fd-180e-4c8e-a9aa-801f8dd2dff6" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="bd1f68f2-c83c-4c7c-b6a1-fddd903723b0" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="user-exp-api-main-ANYerror-test" doc:id="c54a1ae8-76e8-4285-9a35-a76e056dbad2" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="95b8d931-0201-4c66-a8b5-d45b2a7a39e5" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="user-exp-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="7daa0a45-00c0-4241-ab51-19fc3d4db243" >
+				<munit:payload value='"" as Binary {base: "64"}' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="e1383a48-2d46-41cb-950d-1eda4a12f239" >
+				<flow-ref doc:name="Flow-ref to user-exp-api-main" doc:id="00c43fcc-60dd-451f-ad0a-c1f6af917813" name="user-exp-api-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ef9d7c8e-e991-4339-ac35-cf2469dff5d9" >
+						<logger level="INFO" doc:name="Logger" doc:id="5c817160-726d-410c-b5ff-3f4cc05e8833" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		
+</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="8749f6e0-b2db-44eb-b62d-c9383578e72b" is='#[MunitTools::equalTo("servicenow ticket raised")]' expression="#[payload.message]"/>
+
+		</munit:validation>
+	
+</munit:test>
+
+
+</mule>

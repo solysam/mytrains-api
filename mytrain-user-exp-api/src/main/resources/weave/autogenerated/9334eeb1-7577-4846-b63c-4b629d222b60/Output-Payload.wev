@@ -1,0 +1,9 @@
+%dw 2.0
+
+type auto_9334eeb1_7577_4846_b63c_4b629d222b60_Output_Payload = {
+  "new password": String, 
+  "security answer": String, 
+  login: String, 
+  _?: Any
+}
+

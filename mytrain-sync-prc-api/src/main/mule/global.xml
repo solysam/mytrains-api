@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:my-sql-database-system-api="http://www.mulesoft.org/schema/mule/my-sql-database-system-api" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:national-rail-system-api="http://www.mulesoft.org/schema/mule/national-rail-system-api" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/national-rail-system-api http://www.mulesoft.org/schema/mule/national-rail-system-api/current/mule-national-rail-system-api.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/my-sql-database-system-api http://www.mulesoft.org/schema/mule/my-sql-database-system-api/current/mule-my-sql-database-system-api.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<national-rail-system-api:config name="National_Rail_System_API_Config" doc:name="National Rail System API Config" doc:id="cd82b263-2cca-41e1-aae1-15156c13c71b" property_host="localhost" property_port="${nationalRail-sys-api.port}" property_protocol="HTTP" property_basePath="/api"/>
+	<configuration-properties doc:name="Configuration properties" doc:id="fd6e0b85-0625-4ca2-9813-c557448552c5" file="sync.prc.api.dev.yaml" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="016f8b27-67a6-4968-86f5-4df0ed01b3d8" >
+		<http:listener-connection host="localhost" port="8085" />
+	</http:listener-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="304c272b-abea-4a7c-b733-24c6fc8a960d" >
+		<vm:queues >
+			<vm:queue queueName="VM1" queueType="PERSISTENT" />
+		</vm:queues>
+	</vm:config>
+	<my-sql-database-system-api:config name="MySql_Database_System_API_Config" doc:name="MySql Database System API Config" doc:id="32ae31c8-a921-4998-a07a-a7a29bbf775b" property_host="localhost" property_port="${database-sys-api.port}" property_protocol="HTTP" property_basePath="/api"/>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="993dac60-9efc-4e73-b13f-25376ca2a7d6" >
+		<email:smtp-connection host="smtp.gmail.com" port="587" user="samsoly1790@gmail.com" password="$amuel1790" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="ce038be6-172f-4d9f-838d-ca01116c7d2c" >
+		<salesforce:basic-connection username="sam@mag.com" password="Dunelm!1234" securityToken="6Sp4LgboGuB2qqr4rp04tsegN" />
+	</salesforce:sfdc-config>
+	<json-logger:config name="JSON_Logger_Config" doc:name="JSON Logger Config" doc:id="c35ebd52-4c36-488e-a9d6-80f91e3249de" applicationName="${logger.application.name}" applicationVersion="${logger.application.version}" environment="${logger.env}"/>
+	<configuration doc:name="Configuration" doc:id="f2621336-c435-479d-b22e-9a83ef262787" defaultErrorHandler-ref="globalError_Handler" />
+	<servicenow:config name="ServiceNow_Config" doc:name="ServiceNow Config" doc:id="9dcbdd55-d409-40ff-a75a-b1830a3382b9" >
+		<servicenow:basic-connection username="${secure::servicenow.user}" password="${secure::servicenow.password}" serviceAddress="${servicenow.address}" serviceNowVersion="QUEBEC" >
+			<servicenow:user-tables />
+			<servicenow:transport >
+				<servicenow:basic-auth-http-message-dispatcher-provider username="admin" password="^RL4s9@wVoIc" />
+			</servicenow:transport>
+		</servicenow:basic-connection>
+	</servicenow:config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="f93a0ce8-11e2-4841-b519-a0515ae3c7f0" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="a7926037-7495-4f54-8fea-35e8b9e9ddf0" file="sync.prc.api.dev.yaml" key="mule" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+
+
+</mule>
+

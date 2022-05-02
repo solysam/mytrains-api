@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="interface-test-suite.xml" />
+	<munit:test name="user-exp-api-main-success-test" doc:id="2c6fcc4f-baa9-4160-9c63-aed43355b705" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="935e7ddd-eef6-4cc9-be4c-6345f2301517" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="user-exp-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="49d9ec70-7625-474b-88aa-471183e67afc" >
+				<munit:payload value='"" as Binary {base: "64"}' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to user-exp-api-main" doc:id="ee528057-3d1a-4a88-a1e9-34f4b86781ae" name="user-exp-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="246a7dcb-f187-4b89-aa9d-8daf7c01de15" message="The payload does not match"/>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="get:\users:user-exp-api-config-test" doc:id="2dd766a8-b9aa-44e2-bfe0-b3b4e13e977a" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-usersForAdmin" doc:id="f1434417-ce93-4609-ad90-00d6a0b6f54e" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2f86d94c-28f7-43c1-ae82-270a70951283" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getusersdatabasesysapiconfigsuccesstest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getusersdatabasesysapiconfigsuccesstest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="3a1a8cdf-127b-45d9-b708-62c33222fe68" >
+				<munit:payload value="#[readUrl('classpath://getusersdatabasesysapiconfigsuccesstest\set-event_payload.dwl')]" />
+				<munit:attributes value="#[readUrl('classpath://getusersdatabasesysapiconfigsuccesstest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getusersdatabasesysapiconfigsuccesstest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\users:user-exp-api-config" doc:id="b2f6b7da-49a7-4863-8432-e3d167b238ad" name="get:\users:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="cf5c88a3-9bde-456b-b9dd-75290f8cf7c9" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getusersdatabasesysapiconfigsuccesstest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	
+</munit:test>
+
+	<munit:test name="get:\users\(user_id):user-exp-api-config-test" doc:id="3ccf7d66-5d55-44be-95c3-31b5cf62ea41" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-userForAdmin" doc:id="f36b2ad2-a8ce-4a41-8429-13275d22a8a6" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="07d40a69-8a3a-4273-be50-2245119fcde9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getusersuseriddatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseriddatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="2c643690-5a16-4475-ab0f-45a85decd15a" >
+				<munit:payload value="#[readUrl('classpath://getusersuseriddatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getusersuseriddatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseriddatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\users\(user_id):database-sys-api-config" doc:id="ed14dfac-0c71-441d-a994-0b90ef6bda83" name="get:\users\(user_id):user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="e585d728-2547-4d76-b134-dd6241452368" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getusersuseriddatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="get:\users\(user_id)\subscriptions:user-exp-api-config-test" doc:id="864888a2-8e55-424d-99f2-07a94f341730" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionsForAdmin" doc:id="65f5b60c-98a8-4389-872e-bebccda15b69" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8c979585-3044-43fd-95fc-c1af1250cbff" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getusersuseridsubscriptionsdatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseridsubscriptionsdatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="196ae89a-d460-4943-a6f3-b234b2e14be8" >
+				<munit:payload value="#[readUrl('classpath://getusersuseridsubscriptionsdatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getusersuseridsubscriptionsdatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseridsubscriptionsdatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\users\(user_id)\subscriptions:database-sys-api-config" doc:id="7b6a4f53-6b96-4054-baee-d3cc23662106" name="get:\users\(user_id)\subscriptions:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="90e99901-a4de-4660-ac00-8e36787ddb4f" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getusersuseridsubscriptionsdatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="get:\users\(user_id)\subscriptions\(subscription_id):database-sys-api-config-test" doc:id="a431e8a6-ce19-499e-9b8a-ce7edfc37f79" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionForAdmin" doc:id="8dd23e5f-6eb1-4454-a8f5-c3aba2c17245" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b9b202f0-16e7-46f8-92cf-89ac2749fa30" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getusersuseridsubscriptionssubscriptioniddatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptioniddatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="d3786fce-b1ef-4709-8a6d-7d38348c0335" >
+				<munit:payload value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptioniddatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptioniddatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptioniddatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\users\(user_id)\subscriptions\(subscription_id):database-sys-api-config" doc:id="4a2754a3-bf76-4276-b4c5-d54a23827014" name="get:\users\(user_id)\subscriptions\(subscription_id):user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="4a483a35-3d44-4c63-bf12-7b444d87d59f" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getusersuseridsubscriptionssubscriptioniddatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="get:\users\(user_id)\subscriptions\(subscription_id)\alerts:database-sys-api-config-test" doc:id="8f10d1a2-8dc7-44c2-8205-aaddd99fea07" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-alertsForAdmin" doc:id="329ffb30-70f1-4272-9a58-a4101baa2831" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f7c0d41d-c5e7-4a91-b1fe-1f709b7abc2d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="d0e58782-650d-4111-b537-df8e2638d3dc" >
+				<munit:payload value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\users\(user_id)\subscriptions\(subscription_id)\alerts:database-sys-api-config" doc:id="08c33122-1555-4065-92c5-3db19d87520e" name="get:\users\(user_id)\subscriptions\(subscription_id)\alerts:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="e3357f21-b48b-4b93-bc0c-e0b7c949d66e" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getusersuseridsubscriptionssubscriptionidalertsdatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="get:\users\(user_id)\subscriptions\(subscription_id)\alerts\(alert_id):database-sys-api-config-test" doc:id="13d0a946-0728-434e-9ed3-ad11d9f66b1e" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-alertForAdmin" doc:id="d87b8708-3dc8-4fca-8147-1542ce53a37e" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b011c463-8e7c-480f-b220-99ed15537d64" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="d6279f66-0b8b-4012-85b9-5c92a33317a0" >
+				<munit:payload value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getusersuseridsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\users\(user_id)\subscriptions\(subscription_id)\alerts\(alert_id):database-sys-api-config" doc:id="db3fac89-fe87-4d47-b42f-f95d24ba76b0" name="get:\users\(user_id)\subscriptions\(subscription_id)\alerts\(alert_id):user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="22fc5ee7-1af3-4c4d-ba61-3d04612077fe" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getusersuseridsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="get:\login\subscriptions:database-sys-api-config-test" doc:id="ac49a1a2-6769-4f90-b68f-eb147ebd1247" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionsForUser" doc:id="2d9eea4d-5281-41b4-88fa-0d1ddb62d6fd" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4d00af9f-478e-4837-8ed2-d56b105ab8c2" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getloginsubscriptionsdatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getloginsubscriptionsdatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="238bb63a-d022-4f7c-ade4-9a5cf70dc698" >
+				<munit:payload value="#[readUrl('classpath://getloginsubscriptionsdatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getloginsubscriptionsdatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getloginsubscriptionsdatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\login\subscriptions:database-sys-api-config" doc:id="a4a61703-da4b-4679-84b6-c89aec18b8eb" name="get:\login\subscriptions:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="e25955fa-7cfc-45d5-b63b-5bb0898d12cc" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getloginsubscriptionsdatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="get:\login\subscriptions\(subscription_id):database-sys-api-config-test" doc:id="d03aedfe-9338-41b8-bb75-bf81912de595" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionForUser" doc:id="20c0fc72-def8-4761-b9dd-ec00f7a76444" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6bd37cc2-c1fb-4621-a998-88b7f52b2e41" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getloginsubscriptionssubscriptioniddatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getloginsubscriptionssubscriptioniddatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="28e9a6bb-a0d0-4c77-8e86-114e390bba7f" >
+				<munit:payload value="#[readUrl('classpath://getloginsubscriptionssubscriptioniddatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getloginsubscriptionssubscriptioniddatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getloginsubscriptionssubscriptioniddatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\login\subscriptions\(subscription_id):database-sys-api-config" doc:id="40c9692b-9083-4449-9653-7de483e69914" name="get:\login\subscriptions\(subscription_id):user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="6b3a0c2f-33db-4bb1-9284-a5fe0b99723d" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getloginsubscriptionssubscriptioniddatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="get:\login\subscriptions\(subscription_id)\alerts:database-sys-api-config-test" doc:id="6511404f-a22c-4552-a855-9d081d43f9a0" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-alertsForUser" doc:id="326b8a8c-4c85-4042-a6cc-2262aaa67ccb" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="5a16040b-f749-4ce9-834c-a922e84d2c8c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getloginsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getloginsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="726c4e09-1d8b-4c59-9a48-a1bfd223cb91" >
+				<munit:payload value="#[readUrl('classpath://getloginsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getloginsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getloginsubscriptionssubscriptionidalertsdatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\login\subscriptions\(subscription_id)\alerts:database-sys-api-config" doc:id="924addf6-b0e3-4c77-b039-8c17c27c635a" name="get:\login\subscriptions\(subscription_id)\alerts:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="04088787-3382-4ced-864a-01780a2744e0" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getloginsubscriptionssubscriptionidalertsdatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="get:\login\subscriptions\(subscription_id)\alerts\(alert_id):database-sys-api-config-test" doc:id="b9a4f151-aebf-4b06-a1f9-0b7df384463c" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-alertForUser" doc:id="44d55c29-8b87-4520-88f7-492a8a3143e2" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2e6e958f-39a5-4c79-92f5-6a2d61adb1d9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://getloginsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://getloginsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="0925947e-e09a-445f-a480-058bdce7e4cb" >
+				<munit:payload value="#[readUrl('classpath://getloginsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getloginsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getloginsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\login\subscriptions\(subscription_id)\alerts\(alert_id):database-sys-api-config" doc:id="0846f0e6-6441-44f6-920a-bcf5e054a170" name="get:\login\subscriptions\(subscription_id)\alerts\(alert_id):user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="d306bdd5-502b-495e-ae0f-5790558e1b64" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getloginsubscriptionssubscriptionidalertsalertiddatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="post:\users:application\json:okta-sys-api-config-test" doc:id="6c5bf001-586e-4392-bf24-8331d8b129f1" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Flow Reference" doc:id="6baaa2f5-9788-4ad8-8ab6-df7a4f009861" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cce5a829-2bdd-409d-86dd-879ff1211b03" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="d250b234-bf0b-4cfa-a57c-a6b646cff61b" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postusersapplicationjsonoktasysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\users:application\json:okta-sys-api-config" doc:id="433caf8e-9bb9-4578-8820-bf5cf9885fad" name="post:\users:application\json:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="7fc878bd-3325-4222-94f0-3d486a415760" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postusersapplicationjsonoktasysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="post:\login:application\json:okta-sys-api-config-test" doc:id="96cbae77-4bb3-4745-9d7c-55a1202ffda2" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Flow Reference" doc:id="ea8dac30-e84d-4a2d-8ec4-1ec5d20e6e00" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="861eda69-708b-4185-8e11-9512776cba05" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="4a0257cb-5d22-40c7-8335-7b19f3d67999" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postloginapplicationjsonoktasysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\login:application\json:okta-sys-api-config" doc:id="575a4e3b-784e-4fc2-a6af-1ee32c51587f" name="post:\login:application\json:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="39a2c605-f9e9-4a09-bb87-58940ca8b0f9" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postloginapplicationjsonoktasysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="post:\login\subscriptions:application\json:database-sys-api-config-test" doc:id="c426ca7a-3937-4887-a3f6-0fa0217c24cf" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock save-alertSubscription" doc:id="169fb697-1996-4ae0-baff-90a61e817794" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="200fe3d3-e7f0-47db-a815-d9c35d758c30" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://postloginsubscriptionsapplicationjsondatabasesysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://postloginsubscriptionsapplicationjsondatabasesysapiconfigtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://postloginsubscriptionsapplicationjsondatabasesysapiconfigtest\mock_variable_1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="19d5151e-d320-4c8e-8950-b605e7422d9d" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postloginsubscriptionsapplicationjsondatabasesysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postloginsubscriptionsapplicationjsondatabasesysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postloginsubscriptionsapplicationjsondatabasesysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\login\subscriptions:application\json:database-sys-api-config" doc:id="87af4ae7-6f08-440a-90f4-755b80225eb3" name="post:\login\subscriptions:application\json:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="7ea6d9d5-478d-41f3-9aad-f8b1b7b6f6a2" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postloginsubscriptionsapplicationjsondatabasesysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+	<munit:test name="post:\resetPassword:application\json:okta-sys-api-config-test" doc:id="637ca440-16df-484a-92b3-a2d5a09dd354" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Flow Reference" doc:id="f7fc6d67-6246-488b-96d0-07abe01941af" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1f8e714f-e8e2-4e75-bd70-0bdbeb759f6e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\mock_variable_1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="493c26c5-efb5-4eca-8658-bc2c9ac36f88" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postresetPasswordapplicationjsonoktasysapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\resetPassword:application\json:okta-sys-api-config" doc:id="0f5f295b-b179-4d2e-b52f-466c43f61445" name="post:\resetPassword:application\json:user-exp-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="5a42bf6a-1db4-47ff-a721-0e482b011c8f" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postresetPasswordapplicationjsonoktasysapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

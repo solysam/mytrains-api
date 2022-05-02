@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <flow name="user-exp-api-main" doc:id="dcf87d6b-0f08-454f-95c6-1da46c00c0e2">
+        <http:listener config-ref="user-exp-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="user-exp-api-config"/>
+
+    </flow>
+    <flow name="user-exp-api-console">
+        <http:listener config-ref="user-exp-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="user-exp-api-config"/>
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="get:\users:user-exp-api-config">
+		<flow-ref doc:name="admin-getUsers" doc:id="2f86d94c-28f7-43c1-ae82-270a70951283" name="admin-users-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id):user-exp-api-config">
+		<flow-ref doc:name="admin-getUser" doc:id="07d40a69-8a3a-4273-be50-2245119fcde9" name="admin-user-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id)\subscriptions:user-exp-api-config" doc:id="07e0c5ee-1875-4612-b45b-4c9204bedb81">
+		<flow-ref doc:name="admin-getSubscriptions" doc:id="8c979585-3044-43fd-95fc-c1af1250cbff" name="admin-subscriptions-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id)\subscriptions\(subscription_id):user-exp-api-config" doc:id="e64a8ca8-d47a-47b1-8a2d-65c525d51142">
+		<flow-ref doc:name="admin-getSubscription" doc:id="b9b202f0-16e7-46f8-92cf-89ac2749fa30" name="admin-subscription-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id)\subscriptions\(subscription_id)\alerts:user-exp-api-config" doc:id="39cce351-c4d6-4e75-aa19-488bf533ddc1">
+		<flow-ref doc:name="admin-getAlerts" doc:id="f7c0d41d-c5e7-4a91-b1fe-1f709b7abc2d" name="admin-alerts-flow"/>
+    </flow>
+	<flow name="get:\users\(user_id)\subscriptions\(subscription_id)\alerts\(alert_id):user-exp-api-config" doc:id="16892131-6efc-4119-bb20-b14e3c44b4f5">
+		<flow-ref doc:name="admin-getAlert" doc:id="b011c463-8e7c-480f-b220-99ed15537d64" name="admin-alert-flow"/>
+    </flow>
+	<flow name="get:\login\subscriptions:user-exp-api-config" doc:id="27d05aed-1749-4da2-8cd2-ebd81946d4ee">
+		<flow-ref doc:name="user-getSubscriptions" doc:id="4d00af9f-478e-4837-8ed2-d56b105ab8c2" name="user-subscriptions-flow"/>
+    </flow>
+	<flow name="get:\login\subscriptions\(subscription_id):user-exp-api-config" doc:id="2fc75ea7-0ba4-488e-88e7-a488c55d6b46">
+		<flow-ref doc:name="user-getSubscription" doc:id="6bd37cc2-c1fb-4621-a998-88b7f52b2e41" name="user-subscription-flow"/>
+    </flow>
+	<flow name="get:\login\subscriptions\(subscription_id)\alerts:user-exp-api-config" doc:id="0017b6ab-899b-43d5-8c99-af1ce8194388">
+		<flow-ref doc:name="user-getAlerts" doc:id="5a16040b-f749-4ce9-834c-a922e84d2c8c" name="user-alerts-flow"/>
+    </flow>
+    <flow name="get:\login\subscriptions\(subscription_id)\alerts\(alert_id):user-exp-api-config" doc:id="561c6021-6f05-40c7-a234-6e6e4980db06">
+		<flow-ref doc:name="user-getAlert" doc:id="2e6e958f-39a5-4c79-92f5-6a2d61adb1d9" name="user-alert-flow"/>
+    </flow>
+    <flow name="post:\users:application\json:user-exp-api-config" doc:id="89d97f4c-ce64-4487-a94b-e316e3d5856f">
+		<flow-ref doc:name="user-register" doc:id="cce5a829-2bdd-409d-86dd-879ff1211b03" name="user-register-flow"/>
+    </flow>
+	<flow name="post:\login:application\json:user-exp-api-config" doc:id="cfae849a-e52b-41d8-8571-ca747e54cb7c">
+		<flow-ref doc:name="user-login" doc:id="861eda69-708b-4185-8e11-9512776cba05" name="user-login-flow"/>
+    </flow>
+    <flow name="post:\login\subscriptions:application\json:user-exp-api-config" doc:id="7ee407a5-934d-472b-9a2c-0a5c3b113a0e">
+		<flow-ref doc:name="user-subscribeAlert" doc:id="200fe3d3-e7f0-47db-a815-d9c35d758c30" name="user-subscribe-flow"/>
+    </flow>
+	<flow name="post:\resetPassword:application\json:user-exp-api-config" doc:id="f853dcb0-67f0-49fb-8254-9ca41db7d266">
+		<flow-ref doc:name="user-resetPassword" doc:id="1f8e714f-e8e2-4e75-bd70-0bdbeb759f6e" name="user-passwordReset-flow"/>
+    </flow>
+</mule>

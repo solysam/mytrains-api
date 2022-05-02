@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_6d395123_1462_42ea_a348_8e40c534eb2f_Output_Variables_rootMessage = {|
+  payload: Array<{|    userID: String,     subscriptionID: Number,     timeWindow: Number,     from: String,     to: String  |}>, 
+  attributes: Null
+|} {"typeId": "org.mule.runtime.api.message.Message"}
+

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:servicenow="http://www.mulesoft.org/schema/mule/servicenow" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/servicenow http://www.mulesoft.org/schema/mule/servicenow/current/mule-servicenow.xsd">
+	<flow name="register-user-flow" doc:id="8d41c711-2a4e-4fad-8d25-63a1e84cffc5">
+		<json-logger:logger doc:name="register-user-input" doc:id="40288ee5-f565-49de-913d-48eb9c75e8ea" config-ref="JSON_Logger_Config" message="register-user-input"/>
+		<ee:transform doc:name="request-register user" doc:id="be97f2e7-1ee9-4e0f-89e8-38c29dfad306">
+			<ee:message>
+				<ee:set-payload resource="request-registerUser.dwl" />
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="register user in okta" doc:id="fb6b30c5-d18c-4f92-b39b-66a0eab406c7" config-ref="HTTP_Request_configuration" path="${http.register}">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"Authorization" : attributes.headers.Authorization
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="response-register user" doc:id="59ad4a2b-46e5-47bb-8b0d-6867fc0a7539">
+			<ee:message>
+				<ee:set-payload resource="response-registerUser.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="register-user-output" doc:id="c1b62ea4-fe89-45b7-8c71-164600558479" config-ref="JSON_Logger_Config" message="register-user-output"/>
+	</flow>
+	<flow name="login-user-flow" doc:id="48c0eb60-75ae-4632-a6a0-1646c3eb3e36">
+		<json-logger:logger doc:name="login-user-input" doc:id="111d15ed-9a6f-4360-95cd-81db66ea1a47" config-ref="JSON_Logger_Config" message="login-user-input"/>
+		<ee:transform doc:name="request-login user" doc:id="6ade4f10-1ac5-41d6-a5e2-2dd512063d05">
+			<ee:message>
+				<ee:set-payload resource="request-loginUser.dwl" />
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="login user in okta" doc:id="e27d07d6-993b-42eb-8c81-652defbb16a7" config-ref="HTTP_Request_configuration" path="${http.login}"/>
+		<ee:transform doc:name="response-login user" doc:id="bab6d6b0-2d05-4f40-88eb-e159d9a8d5c3">
+			<ee:message>
+				<ee:set-payload resource="response-loginUser.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="login-user-output" doc:id="102792a9-afe6-4bb6-8458-fd6bcb98d0f7" config-ref="JSON_Logger_Config" message="login-user-output"/>
+	</flow>
+	<flow name="reset-password-flow" doc:id="55a6d147-402d-460d-907b-f5d7016cb508">
+		<json-logger:logger doc:name="reset-password-input" doc:id="0cf32d56-a238-4eb8-92ae-3ce3932bf298" config-ref="JSON_Logger_Config" message="reset-password-input"/>
+		<set-variable value="#[payload.login]" doc:name="userID" doc:id="abf2752d-a48e-4a2a-8e77-c5c0e4da7474" variableName="userID"/>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="request-password reset" doc:id="febfa39a-7f6e-4ccd-bd22-c0aa2dc25705">
+            <ee:message>
+				<ee:set-payload resource="request-passwordReset.dwl" />
+            </ee:message>
+        </ee:transform>
+		<http:request method="POST" doc:name="reset user password" doc:id="98e1d809-7b19-4a25-a07f-9a2f3f9f255f" config-ref="HTTP_Request_configuration" path="${http.resetPassword}">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Authorization" : "SSWS " ++ Mule::p('secure::http.Authorization')
+}]]]></http:headers>
+			<http:uri-params><![CDATA[#[output application/java
+---
+{
+	"userID" : vars.userID
+}]]]></http:uri-params>
+		</http:request>
+		<ee:transform doc:name="response-password reset" doc:id="54ea8216-9e54-4f1e-8989-9295b39dc3f6">
+			<ee:message>
+				<ee:set-payload resource="response-passwordReset.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="reset-password-output" doc:id="0c341456-15c4-413b-a8de-59fedea938cd" config-ref="JSON_Logger_Config" message="reset-password-output"/>
+	</flow>
+</mule>

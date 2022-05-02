@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_cf0aba4e_4b27_468e_b80b_a1810371c72d_Output_Payload = Array<{  firstName: String,   lastName: String,   mobilePhone: String,   created: Any,   userID: String,   updated: Any,   email: String,   status: Number,   _?: Any}>
+

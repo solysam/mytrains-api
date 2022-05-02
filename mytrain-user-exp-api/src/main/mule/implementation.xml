@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:okta-system-api="http://www.mulesoft.org/schema/mule/okta-system-api" xmlns:my-sql-database-system-api="http://www.mulesoft.org/schema/mule/my-sql-database-system-api" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/my-sql-database-system-api http://www.mulesoft.org/schema/mule/my-sql-database-system-api/current/mule-my-sql-database-system-api.xsd
+http://www.mulesoft.org/schema/mule/okta-system-api http://www.mulesoft.org/schema/mule/okta-system-api/current/mule-okta-system-api.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="userid-subflow" doc:id="9334eeb1-7577-4846-b63c-4b629d222b60" >
+		<ee:transform doc:name="password reset details" doc:id="34a8a063-26f3-47d4-92fb-8706fbb1b1e4">
+			<ee:message>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="user" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"new password": payload."new password",
+	"security answer": payload."security answer",
+	login: payload.login
+}]]></ee:set-variable>
+			</ee:variables>
+		
+</ee:transform>
+		<my-sql-database-system-api:all-users doc:name="All Users" doc:id="dc17cdec-b77c-4ef4-b78e-2bec26da0d6f" config-ref="MySql_Database_System_API_Config"/>
+		<ee:transform doc:name="userID" doc:id="2ded3402-a0cc-4fab-abd4-475a4f724b64" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload filter (value,index) -> (value.email == vars.user.login)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="reset password" doc:id="9c8a9fe8-dde6-4d6d-b152-b3e170d1985e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"new password": vars.user."new password",
+	"security answer": vars.user."security answer",
+	login: payload.userID[0]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<flow name="admin-users-flow" doc:id="65b94d96-7aa2-48ab-98c0-a146678008e1">
+		<json-logger:logger doc:name="admin-users-input" doc:id="c5f4c2cb-440d-44f7-ac01-a7e9cb895740" config-ref="JSON_Logger_Config" message="admin-users-input"/>
+		<my-sql-database-system-api:all-users doc:name="All Users" doc:id="3ceebf23-b444-435e-ad24-1f685fd79d0e" config-ref="MySql_Database_System_API_Config"/>
+		<ee:transform doc:name="users">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	userID: payload01.userID,
+	firstName: payload01.firstName,
+	lastName: payload01.lastName,
+	mobilePhone: payload01.mobilePhone,
+	email: payload01.email,
+	status: payload01.status,
+	created: payload01.created,
+	updated: payload01.updated
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="admin-users-output" doc:id="7d36f85d-555d-4a4d-9e5c-b74f1243f904" config-ref="JSON_Logger_Config" message="admin-users-output"/>
+	
+</flow>
+	<flow name="admin-user-flow" doc:id="9ca896a1-28cd-4e91-9ea2-5b85cfbd2c1d">
+		<json-logger:logger doc:name="admin-user-input" doc:id="fe578b8d-8a88-487f-92c5-fd70a7cd2516" config-ref="JSON_Logger_Config" message="admin-user-input"/>
+		<my-sql-database-system-api:individual-user doc:name="Individual User" doc:id="b0bc0e2e-eb60-4919-b0c8-e19b0423206a" config-ref="MySql_Database_System_API_Config" user-id="#[attributes.uriParams.user_id]"/>
+		<ee:transform doc:name="user">
+            <ee:variables>
+                <ee:set-variable variableName="user_id"><![CDATA[output application/json
+---
+{
+	firstName: payload.firstName,
+	lastName: payload.lastName,
+	userID: payload.userID,
+	mobilePhone: payload.mobilePhone,
+	email: payload.email,
+	status: payload.status,
+	created: payload.created,
+	updated: payload.updated
+}]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<json-logger:logger doc:name="admin-user-output" doc:id="676cf4d5-e227-48b0-9f17-46c608b9ce2b" config-ref="JSON_Logger_Config" message="admin-user-output"/>
+	
+</flow>
+	<flow name="admin-subscriptions-flow" doc:id="67a48324-4db4-4bb9-901b-3d060af52bb6">
+		<json-logger:logger doc:name="admin-subscriptions-input" doc:id="6924e005-28da-4bf5-b466-05e810a2c58d" config-ref="JSON_Logger_Config" message="admin-subscriptions-input"/>
+		<my-sql-database-system-api:all-subscriptions_1 doc:name="All subscriptions" doc:id="d03e8e96-8782-4adf-9a35-0500ebc31d4b" config-ref="MySql_Database_System_API_Config" user-id="#[attributes.uriParams.user_id]"/>
+		<ee:transform doc:name="subscriptions">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	subscriptionID: payload01.subscriptionID,
+	userID: payload01.userID,
+	status: payload01.status,
+	from: payload01.from,
+	to: payload01.to,
+	startTime: payload01.startTime,
+	endTime: payload01.endTime,
+	advanceNotify: payload01.advanceNotify,
+	created: payload01.created,
+	updated: payload01.updated
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="admin-subscriptions-output" doc:id="f8d4bd65-72a8-4a1a-860c-739f70d02edf" config-ref="JSON_Logger_Config" message="admin-subscriptions-output"/>
+	
+</flow>
+	<flow name="admin-subscription-flow" doc:id="c23c8531-8fff-4de5-8375-fd5fe8d8704e">
+		<json-logger:logger doc:name="admin-subscription-input" doc:id="3bc230e7-ed04-4978-9fcb-f1200225d756" config-ref="JSON_Logger_Config" message="admin-subscription-input"/>
+		<my-sql-database-system-api:individual-subscription doc:name="Individual subscription" doc:id="a0692de1-0bd3-4678-8926-4d1ce816857e" config-ref="MySql_Database_System_API_Config" user-id="#[attributes.uriParams.user_id]" subscription-id="#[attributes.uriParams.subscription_id]"/>
+		<ee:transform doc:name="subscription">
+            <ee:variables>
+                <ee:set-variable variableName="user_id"><![CDATA[attributes.uriParams.'user_id']]></ee:set-variable>
+                <ee:set-variable variableName="subscription_id"><![CDATA[output application/json
+---
+payload]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<json-logger:logger doc:name="admin-subscription-output" doc:id="65e60799-3436-469f-9c2d-5fafbcda0b85" config-ref="JSON_Logger_Config" message="admin-subscription-output"/>
+	
+</flow>
+	<flow name="admin-alerts-flow" doc:id="917612ad-0909-41c1-bd90-45f553da520c">
+		<json-logger:logger doc:name="admin-alerts-input" doc:id="59b22ab1-a601-4e7d-bc0a-22564af7175b" config-ref="JSON_Logger_Config" message="admin-alerts-input"/>
+		<my-sql-database-system-api:all-alerts_2 doc:name="All alerts" doc:id="64b24f9b-a184-4b63-b803-51835f36ead5" config-ref="MySql_Database_System_API_Config" subscription-id="#[attributes.uriParams.subscription_id]"/>
+		<ee:transform doc:name="alerts">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	alertID: payload01.alertID,
+	subscriptionID: payload01.subscriptionID,
+	delayType: payload01.delayType,
+	notificationStatus: payload01.notificationStatus,
+	notificationFailureDetail: payload01.notificationFailureDetail,
+	delayedBy: payload01.delayedBy,
+	created: payload01.created
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="admin-alerts-output" doc:id="69350226-cf31-45ab-8e9c-1f7dc319c3a4" config-ref="JSON_Logger_Config" message="admin-alerts-output"/>
+	
+</flow>
+	<flow name="admin-alert-flow" doc:id="f7cb945a-fdcc-4fe2-b2db-d688b91dbd4a">
+		<json-logger:logger doc:name="admin-alert-input" doc:id="8b108316-b42f-4c5a-b185-dd94e2a5e0cf" config-ref="JSON_Logger_Config" message="admin-alert-input"/>
+		<my-sql-database-system-api:individual-alerts doc:name="Individual alerts" doc:id="de68e4cb-9f01-4bac-80ef-01276a08e50c" config-ref="MySql_Database_System_API_Config" subscription-id="#[attributes.uriParams.subscription_id]" alert-id="#[attributes.uriParams.alert_id]"/>
+		<ee:transform doc:name="alert">
+            <ee:variables>
+                <ee:set-variable variableName="user_id"><![CDATA[attributes.uriParams.'user_id']]></ee:set-variable>
+                <ee:set-variable variableName="subscription_id"><![CDATA[attributes.uriParams.'subscription_id']]></ee:set-variable>
+                <ee:set-variable variableName="alert_id"><![CDATA[output application/json
+---
+payload]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<json-logger:logger doc:name="admin-alert-output" doc:id="01e6c03b-6927-4c05-9af2-4d036e017b9a" config-ref="JSON_Logger_Config" message="admin-alert-output"/>
+	
+</flow>
+	<flow name="user-subscriptions-flow" doc:id="f76bea8a-40ba-4da8-af1e-216fb625fb50">
+		<json-logger:logger doc:name="user-subscriptions-input" doc:id="b8a52554-0ada-4e33-81e8-a1f23d6ad08c" config-ref="JSON_Logger_Config" message="user-subscriptions-input"/>
+		<ee:transform doc:name="user-login" doc:id="e620d97c-89da-424d-8462-12fc69071052" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	login: attributes.queryParams.login,
+	password: attributes.queryParams.password
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="get user ID" doc:id="285da2d6-05f7-4126-b883-af62b8181c4b" name="user-login-flow"/>
+		<my-sql-database-system-api:all-subscriptions_1 doc:name="All subscriptions" doc:id="6a7e02fa-5487-4a19-911d-e8ddb5215e09" config-ref="MySql_Database_System_API_Config" user-id="#[payload.userID]"/>
+		<ee:transform doc:name="subscriptions">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	userID: payload01.userID,
+	subscriptionID: payload01.subscriptionID,
+	from: payload01.from,
+	to: payload01.to,
+	startTime: payload01.startTime,
+	endTime: payload01.endTime,
+	advanceNotify: payload01.advanceNotify,
+	status: payload01.status,
+	created: payload01.created,
+	updated: payload01.updated
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="user-subscriptions-output" doc:id="417c1e77-fcb2-4cdf-9e65-4f22b0f557b9" config-ref="JSON_Logger_Config" message="user-subscriptions-output"/>
+	
+</flow>
+	<flow name="user-subscription-flow" doc:id="095d8623-e48b-4bd1-a0e1-cf159299f475">
+		<json-logger:logger doc:name="user-subscription-input" doc:id="b57c099a-2f74-40b0-ad87-3f7c31d0df8f" config-ref="JSON_Logger_Config" message="user-subscription-input"/>
+		<ee:transform doc:name="user-login &amp; subscription-id" doc:id="ad2a4569-aace-433d-8127-64daeade0026">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	login: attributes.queryParams.login,
+	password: attributes.queryParams.password
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="subscriptionID" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.uriParams.subscription_id]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="get user ID" doc:id="010dbeee-b9b8-4034-b124-e76445a87ee1" name="user-login-flow" />
+		<my-sql-database-system-api:individual-subscription doc:name="Individual subscription" doc:id="79fe29eb-a5b9-4235-a7aa-ce5eee91285f" config-ref="MySql_Database_System_API_Config" subscription-id="#[vars.subscriptionID]" user-id="#[payload.userID]"/>
+		<ee:transform doc:name="subscription">
+            <ee:variables>
+                <ee:set-variable variableName="subscription_id"><![CDATA[output application/json
+---
+{
+	userID: payload.userID,
+	subscriptionID: payload.subscriptionID,
+	from: payload.from,
+	to: payload.to,
+	startTime: payload.startTime,
+	endTime: payload.endTime,
+	advanceNotify: payload.advanceNotify,
+	status: payload.status,
+	created: payload.created,
+	updated: payload.updated
+}
+]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<json-logger:logger doc:name="user-subscription-output" doc:id="6230e5f8-8b12-4f08-9fb5-7c47a083ad2d" config-ref="JSON_Logger_Config" message="user-subscription-output"/>
+	
+</flow>
+	<flow name="user-alerts-flow" doc:id="c739742d-5bd3-4559-98a1-e8c4ba8382ea">
+		<json-logger:logger doc:name="user-alerts-input" doc:id="6c19596f-59d3-438f-925b-de0594237058" config-ref="JSON_Logger_Config" message="user-alerts-input"/>
+		<ee:transform doc:name="user-login &amp; subscription-id" doc:id="37ecbff6-9b6f-4a63-b637-d3b1659106c5">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	login: attributes.queryParams.login,
+	password: attributes.queryParams.password
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="subscriptionID"><![CDATA[%dw 2.0
+output application/json
+---
+attributes.uriParams.subscription_id]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="get user ID" doc:id="6f838ac6-8856-46a0-b39a-932fdaa2eddb" name="user-login-flow" />
+		<my-sql-database-system-api:all-alerts_1 doc:name="All alerts" doc:id="ee53fee7-b0f0-4ea4-b838-e528e568afd1" config-ref="MySql_Database_System_API_Config" user-id="#[payload.userID]" subscription-id="#[vars.subscriptionID]"/>
+		<ee:transform doc:name="alerts">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	alertID: payload01.alertID,
+	subscriptionID: payload01.subscriptionID,
+	delayType: payload01.delayType,
+	notificationStatus: payload01.notificationStatus,
+	notificationFailureDetail: payload01.notificationFailureDetail,
+	delayedBy: payload01.delayedBy,
+	created: payload01.created
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="user-alerts-output" doc:id="67a83126-07fd-4186-aff0-284d2a06231b" config-ref="JSON_Logger_Config" message="user-alerts-output"/>
+	
+</flow>
+	<flow name="user-alert-flow" doc:id="00e31739-dae4-4678-91c4-731ee60e2799">
+		<json-logger:logger doc:name="user-alert-input" doc:id="1948119b-93fa-4b47-a4e9-639a49b59dca" config-ref="JSON_Logger_Config" message="user-alert-input"/>
+		<ee:transform doc:name="user-login,subscription-id &amp; alert-id" doc:id="e25b6ab1-6635-41a4-8d97-8e2fb8f054b7">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	login: attributes.queryParams.login,
+	password: attributes.queryParams.password
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="subscriptionID"><![CDATA[%dw 2.0
+output application/json
+---
+attributes.uriParams.subscription_id]]></ee:set-variable>
+				<ee:set-variable variableName="alertID" ><![CDATA[%dw 2.0
+output application/json
+---
+attributes.uriParams.alert_id]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="get user ID" doc:id="8295670b-eb4a-40d7-85e0-e94d20209e02" name="user-login-flow" />
+		<my-sql-database-system-api:indvidual-alert doc:name="Indvidual alert" doc:id="98826bcf-34a0-4086-ad9c-03a7e247a4ad" config-ref="MySql_Database_System_API_Config" user-id="#[payload.userID]" subscription-id="#[vars.subscriptionID]" alert-id="#[vars.alertID]"/>
+		<ee:transform doc:name="alert">
+            <ee:variables>
+                <ee:set-variable variableName="subscription_id"><![CDATA[attributes.uriParams.'subscription_id']]></ee:set-variable>
+                <ee:set-variable variableName="alert_id"><![CDATA[output application/json
+---
+{
+	alertID: payload.alertID,
+	subscriptionID: payload.subscriptionID,
+	delayType: payload.delayType,
+	notificationStatus: payload.notificationStatus,
+	notificationFailureDetail: payload.notificationFailureDetail,
+	delayedBy: payload.delayedBy,
+	created: payload.created
+}]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<json-logger:logger doc:name="user-alert-output" doc:id="33043ebf-8aed-4491-9539-60d9c278afb9" config-ref="JSON_Logger_Config" message="user-alert-output"/>
+	
+</flow>
+	<flow name="user-register-flow" doc:id="7f66db39-15a3-458e-9ef3-d17eb641e5d1" >
+		<json-logger:logger doc:name="user-register-input" doc:id="dbdcb21a-c384-4ca9-bf98-abc051a64b20" config-ref="JSON_Logger_Config" message="user-register-input"/>
+		<ee:transform doc:name="user details to okta" doc:id="cf93d39d-edf8-482e-9004-7ef078fc74f2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	firstName: payload.firstName,
+	lastName: payload.lastName,
+	password: payload.password,
+	mobilePhone: payload.mobilePhone,
+	"security answer": payload."security answer",
+	email: payload.email
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<okta-system-api:new-user doc:name="register in okta" doc:id="388f7137-9f36-41ef-9e8d-755515a59cf8" config-ref="Okta_System_API_Config" authorization="#[&quot;SSWS &quot; ++ Mule::p('secure::okta-sys-api.Authorization')]"/>
+		<ee:transform doc:name="registered details to db" doc:id="a4316b4f-87d0-4059-9395-a2f662af77e4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	firstName: payload."First-Name",
+	lastName: payload."Last-Name",
+	mobilePhone: payload."Mobile",
+	created: payload."Created" as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+	userID: payload."Unique-id",
+	updated: payload."Updated" as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+	email: payload."Login-id",
+	status: 0
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="uniqueID" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	id: payload."Unique-id"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<my-sql-database-system-api:save-user-details doc:name="Save user details" doc:id="00ab9cc5-e588-4f97-bc29-f33043e95d47" config-ref="MySql_Database_System_API_Config"/>
+		<ee:transform doc:name="registered successfully" doc:id="540bd7e5-cb75-4135-b028-b41ae5c35a1d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "User registered"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="user-register-output" doc:id="5b71a1c7-c15b-494a-9af4-8b60cda5244f" config-ref="JSON_Logger_Config" message="user-register-output"/>
+	
+</flow>
+	<flow name="user-login-flow" doc:id="843b8e61-2a95-4afe-8eab-fdae1118ad7e">
+		<json-logger:logger doc:name="user-login-input" doc:id="78189291-0f04-499a-b226-cfa56c91bd9c" config-ref="JSON_Logger_Config" message="user-login-input"/>
+		<ee:transform doc:name="user login details" doc:id="8513192a-5faa-4c15-802d-f343499c2fa9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	password: payload.password,
+	login: payload.login
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<okta-system-api:login-user doc:name="Login User" doc:id="c030ff70-fd70-472f-a023-a5b7e34439cb" config-ref="Okta_System_API_Config"/>
+		<ee:transform doc:name="unique user id">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+userID: payload."Unique-id"
+]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="user-login-output" doc:id="9ed9ff8f-338d-46b8-8e37-906bb5c4b289" config-ref="JSON_Logger_Config" message="user-login-output"/>
+	
+</flow>
+	<flow name="user-subscribe-flow" doc:id="20d56ac2-5898-4f1c-a1d3-79a854537279" >
+		<json-logger:logger doc:name="user-subscribe-input" doc:id="7e829aeb-d09e-4716-beb3-d97e9872fbfb" config-ref="JSON_Logger_Config" message="user-subscribe-input"/>
+		<ee:transform doc:name="alert subscription details" doc:id="10101646-d446-4267-9020-1082f60c64c4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	userID: lookup("user-login-flow",{
+		login: attributes.queryParams.login,
+		password: attributes.queryParams.password
+	}),
+	status: 1,
+	from: payload.from,
+	to: payload.to,
+	startTime: payload.startTime,
+	endTime: payload.endTime,
+	advanceNotify: payload.advanceNotify
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="alert subscription with userID" doc:id="6a9c4c87-8564-4792-b378-1234b8e85dfd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{	
+	userID: payload.userID.userID,
+	status: 1,
+	from: payload.from,
+	to: payload.to,
+	startTime: payload.startTime,
+	endTime: payload.endTime,
+	advanceNotify: payload.advanceNotify,
+	created: now() as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"},
+	updated: now() as DateTime as String {format: "uuuu-MM-dd HH:mm:ss"}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<my-sql-database-system-api:subscribe-alerts doc:name="Subscribe alerts" doc:id="e171b8b9-da3f-4f09-9149-e021015baea3" config-ref="MySql_Database_System_API_Config"/>
+		<ee:transform doc:name="alert notification subscribed">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="user-subscribe-output" doc:id="954936d3-cdcb-45ea-a1bc-daf8d47a473d" config-ref="JSON_Logger_Config" message="user-subscribe-output"/>
+	
+</flow>
+	<flow name="user-passwordReset-flow" doc:id="895d74b1-a7f6-43cf-b3a4-591c2efbe0a1" >
+		<json-logger:logger doc:name="user-passwordReset-input" doc:id="7d3e47b0-65ac-4364-a656-359862df0d3a" config-ref="JSON_Logger_Config" message="user-passwordReset-input"/>
+		<flow-ref doc:name="get-userid" doc:id="586f3f19-0d96-4310-9658-a3ae3506d44e" name="userid-subflow" />
+		<okta-system-api:reset-forgotten-password doc:name="Reset forgotten password" doc:id="504df100-68ef-422b-a3ad-00aba7e117fb" config-ref="Okta_System_API_Config"/>
+		<ee:transform doc:name="password reset successful">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "Password changed"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="user-passwordReset-output" doc:id="998bda6a-67cd-46d1-ae40-64cd951980b7" config-ref="JSON_Logger_Config" message="user-passwordReset-output"/>
+	
+</flow>
+</mule>

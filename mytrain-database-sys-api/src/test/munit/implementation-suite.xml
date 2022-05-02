@@ -1,0 +1,944 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-suite.xml" />
+	<munit:test name="retrieve-usersForAdmin-flow-test" doc:id="4ad463d2-e406-485d-8d48-f570a719fc1e" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-usersForAdmin-input" doc:id="0a10a581-0e57-40dc-8e2b-07cccaa8b94f" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="1d2d10e0-e762-470f-b0ab-e3aaf1931b09" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrieveusersForAdminflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrieveusersForAdminflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock All users" doc:id="500cfa81-5a3c-45e7-b4f8-4db1e83e70c4" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="86037883-d18c-414e-aa9d-b9a4e81c4c7b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://retrieveusersForAdminflowtest\mock_payload1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrieveusersForAdminflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-usersForAdmin-output" doc:id="50b05744-a7fb-4fe2-8706-8cde82592a85" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0ef04916-3602-4bba-902e-19bc0475519a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrieveusersForAdminflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrieveusersForAdminflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrieveusersForAdminflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="26e39b8b-f016-4df6-b4c2-30a40c1c360d" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrieveusersForAdminflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrieveusersForAdminflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrieveusersForAdminflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-usersForAdmin-flow" doc:id="7139fee8-2fa0-4a1c-961d-5b137011a73c" name="retrieve-usersForAdmin-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="37da0403-d7e7-48ae-b2c5-ceafca69c0ec" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrieveusersForAdminflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify users" doc:id="3e9b27c6-1480-4fb5-9e80-dbb03c9c0521" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8caa8e9c-dd06-45e5-8d22-6e33b4522983" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-userForAdmin-flow-test" doc:id="5507ba44-07dd-429f-b98c-59fdb15c842f" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-userForAdmin-input" doc:id="7277e54c-6f79-42cb-84e1-f047adbee8e7" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b152498d-73d5-454f-a835-83273663fb31" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrieveuserForAdminflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrieveuserForAdminflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrieveuserForAdminflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock user with ID" doc:id="e91f97e4-df56-4960-94eb-1b7360541dae" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="381454e5-b0ee-4355-8fe4-8fe7159ef566" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://retrieveuserForAdminflowtest\mock_payload1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrieveuserForAdminflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-userForAdmin-output" doc:id="7f4679dd-6688-42ad-a3c0-1c3b7c1d3387" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="30bd9a97-6a5e-4d5f-b3b6-321e49ca3c59" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrieveuserForAdminflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrieveuserForAdminflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="213a66a6-f2c2-431f-82fc-de52c092bf01" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrieveuserForAdminflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrieveuserForAdminflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrieveuserForAdminflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-userForAdmin-flow" doc:id="95579f9f-329a-4f66-8f39-c25efaf46c86" name="retrieve-userForAdmin-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="c38abefa-dba9-4016-a708-a27ff40217db" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrieveuserForAdminflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify user" doc:id="d3435bb8-9e39-4d13-8a30-f7e2e1308670" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8c8fad67-13d9-428a-954a-73049f3008ae" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-subscriptionsForAdmin-flow-test" doc:id="2d1bad1d-3fc4-4b51-9ea8-9a3d64e2a35e" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionsForAdmin-input" doc:id="5498615d-bdba-44b2-975e-3029e204479e" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="e4b987cf-ac71-4b59-976e-0f1b234d4b91" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsForAdminflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrievesubscriptionsForAdminflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsForAdminflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionsForAdmin-output" doc:id="52de9355-97c6-409d-89f4-41babbb52d59" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="44dd8b50-18b6-44e1-8563-b2d93e109535" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsForAdminflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsForAdminflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock get-subscriptions" doc:id="1e894873-0652-4caf-8ef9-eec448bccc7c" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b3bf97d9-6184-4195-8593-431a9fc7850e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsForAdminflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsForAdminflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="02a4f69e-4df4-47e6-9271-738fea51e9ed" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsForAdminflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievesubscriptionsForAdminflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsForAdminflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-subscriptionsForAdmin-flow" doc:id="4647daa9-7f73-453d-b914-93a1ec7d754c" name="retrieve-subscriptionsForAdmin-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="24214596-eff0-40ff-b57e-75b104e6561d" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievesubscriptionsForAdminflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-subscriptionForAdmin-flow-test" doc:id="38f7edf6-bf9b-4ce4-bc56-f207ab826938" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionForAdmin-output" doc:id="e8d42a24-bcb0-4bad-ac92-42db28c57d5a" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d60f352a-ef09-47c9-a488-4ff24fb21f4a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionForAdminflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionForAdminflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionForAdmin-input" doc:id="67b30356-62ac-46a7-908d-f0cb8d0cfdeb" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="15f8ad5a-6e17-4fe1-b92f-b36f5f655c9e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionForAdminflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrievesubscriptionForAdminflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionForAdminflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock get-subscription" doc:id="cb561df0-1462-4e7f-b94b-f6d10aafc763" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c04a04bd-1b1f-4a1f-87b3-8fffbe786c70" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionForAdminflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionForAdminflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="47397c62-651a-4af9-a376-b2d188a0ad17" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionForAdminflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievesubscriptionForAdminflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionForAdminflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-subscriptionForAdmin-flow" doc:id="d004a098-c156-4c77-be8f-1f69335149b8" name="retrieve-subscriptionForAdmin-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="07946f23-30cc-4675-9f27-bf62f92ee36d" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievesubscriptionForAdminflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-alertsForAdmin-flow-test" doc:id="02188376-cd69-431b-b120-dbbb4d2faabe" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-alertsForAdmin-output" doc:id="71b9db3c-dc7a-4c0a-8cf5-f92c122d2e7c" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bf7c374e-728e-4c0f-b666-e1a9737032f0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertsForAdminflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsForAdminflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-alertsForAdmin-input" doc:id="61846848-c1ef-4d44-9870-cf7bdba43f1c" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bd0b9a69-064c-4bb4-b2cb-fa6db4f49cc1" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertsForAdminflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrievealertsForAdminflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsForAdminflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock get-alerts" doc:id="c7be63fa-68b5-4b17-b2a5-846055dda181" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8abf061c-876e-45de-9b99-ed30e8da853b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertsForAdminflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsForAdminflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="b8fc676a-6c30-47bc-81fa-34ee354a7d28" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievealertsForAdminflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievealertsForAdminflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsForAdminflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-alertsForAdmin-flow" doc:id="05a45cf4-de3c-4fbc-86f0-9220269dad69" name="retrieve-alertsForAdmin-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="484ff0c4-fa84-4672-ac5a-d963a90daf29" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievealertsForAdminflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-alertForAdmin-flow-test" doc:id="e6113938-fa34-411b-9881-96e47007d3b2" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-alertForAdmin-input" doc:id="bcb575f4-d3d4-4b8e-9e6f-4394a8c38dab" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="23e63530-072d-45b4-ace7-29048647a612" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertForAdminflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrievealertForAdminflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertForAdminflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock get-alert" doc:id="2630f388-a159-4cb8-a6ff-7eb98df381f1" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ff8ccebe-6d6b-4b30-8a02-33ae21273236" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertForAdminflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertForAdminflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-alertForAdmin-output" doc:id="57e9b6f1-9df6-4d1a-b6a4-036e493e7ab6" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3517e289-79dd-4a8d-8562-e30f7e1b10b5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertForAdminflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertForAdminflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="72cba963-dc6b-4104-9ce0-919f44c18adc" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievealertForAdminflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievealertForAdminflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertForAdminflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-alertForAdmin-flow" doc:id="feb23088-b13b-432a-91c7-b96e6ca57e33" name="retrieve-alertForAdmin-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="aa1267e1-1046-4d7d-81e5-102c5333b2e0" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievealertForAdminflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-subscriptionsForUser-flow-test" doc:id="6fdd1b64-b551-4c13-91b0-1e0854c7febc" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionsForUser-input" doc:id="0d25913d-eba2-4e20-8a12-aaad16b8165d" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="592f59bb-c369-4493-9232-a518ae972571" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsForUserflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrievesubscriptionsForUserflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsForUserflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionsForUser-output" doc:id="911d7272-b8c6-4071-b7b2-e4122b34745a" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bbebfd88-2eea-4354-bd9b-ec4fc17918e6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsForUserflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsForUserflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock get-subscriptions" doc:id="27e130c2-076f-445c-8476-8a426ca0bb2b" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="301b25ef-2d30-4a48-8a8c-42f8f0f17db0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsForUserflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsForUserflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="c05fdb55-db8f-40fd-897c-f792d94b1999" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsForUserflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievesubscriptionsForUserflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsForUserflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-subscriptionsForUser-flow" doc:id="5c62cbaa-18f8-4aa9-b6d4-2aa1a4638ff2" name="retrieve-subscriptionsForUser-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="9ff60f26-db88-4aaf-be40-9103cdc5a36b" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievesubscriptionsForUserflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-subscriptionForUser-flow-test" doc:id="eb690a7b-4774-4925-b56c-e459d31eb867" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock get-subscription" doc:id="8fb644b9-c077-44a6-82aa-1bc82588aecc" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0a79d5d7-57ba-4d65-a590-1c1119fd9b05" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionForUserflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionForUserflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionForUser-input" doc:id="93d09b9b-0179-4620-b42e-7a398dbbb066" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2c62ba68-0e53-48fc-bbb4-ff185d35228e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionForUserflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrievesubscriptionForUserflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionForUserflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-subscriptionForUser-output" doc:id="177a7a22-27d0-47d9-a3da-168a79f4d742" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c585968a-91a6-4746-b15d-4ecd98579a57" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionForUserflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionForUserflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="90cffa17-c423-476b-a199-2cc3eb067bef" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionForUserflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievesubscriptionForUserflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionForUserflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-subscriptionForUser-flow" doc:id="00cb81f0-b3c2-4db7-bf25-f9366d7bcc42" name="retrieve-subscriptionForUser-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="296c69e5-51bf-40d9-ae45-58261d53362c" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievesubscriptionForUserflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-alertsForUser-flow-test" doc:id="6ee160c9-3bad-4bb7-ad85-23cfdfce11cd" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock get-alerts" doc:id="acc179c5-3324-4984-a8c0-01e606b593f9" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6064a843-c56a-43a1-bc60-5b5becf89196" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertsForUserflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsForUserflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-alertsForUser-input" doc:id="5b78a2ef-575a-4842-b882-d481a163dc20" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9a2bd599-c584-4707-bfda-b1c469c3fac4" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertsForUserflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrievealertsForUserflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsForUserflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-alertsForUser-output" doc:id="655a03fb-b677-4c86-911a-7829720a1024" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7fad4dc5-48fe-457a-8f6d-7929c72b1e8d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertsForUserflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsForUserflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="08460980-105a-4d4e-8cdd-c2104bff6304" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievealertsForUserflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievealertsForUserflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsForUserflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-alertsForUser-flow" doc:id="6d5be20b-d523-4bd8-af3f-84e922b31f93" name="retrieve-alertsForUser-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="9cc37b63-5911-4573-81ad-26acb9930967" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievealertsForUserflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-alertForUser-flow-test" doc:id="057b833d-a999-4605-92ec-131bbc2c68f1" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock get-alert" doc:id="b72a4c02-4235-430d-a647-25726c5a5738" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7f8b1879-b9fb-478c-9134-a9f35e8af69e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertForUserflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertForUserflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-alertForUser-output" doc:id="cdd80d76-fc97-4377-83be-f9464d00828d" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="690dfeac-4533-4b37-9f7e-5a636cbdd224" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertForUserflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertForUserflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock retrieve-alertForUser-input" doc:id="48eac3aa-8bd5-4251-bfc9-620acc171396" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8d6e08eb-b805-4b0b-a8ef-5dc0bede3351" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://retrievealertForUserflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://retrievealertForUserflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertForUserflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="056299b7-ab55-41da-a2db-2248e7858384" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievealertForUserflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievealertForUserflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertForUserflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-alertForUser-flow" doc:id="55726d27-4808-459d-a53b-b117946f391d" name="retrieve-alertForUser-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="dbcaec2b-a55b-41e1-887c-e8d532c5d5b4" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievealertForUserflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="save-userDetails-flow-test" doc:id="43faa604-7745-472f-9844-ac939a254111" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Set Variable" doc:id="e8d8bdcd-7846-4d95-a050-4c18c8ea6784" processor="set-variable">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="69ef267b-6531-4ce0-81fc-bc4ec440a780" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://saveuserDetailsflowtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://saveuserDetailsflowtest\mock_variable_1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock user details" doc:id="8cccb2b7-5078-44ce-8b55-21883802880e" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a454e016-c37b-44f8-9c1e-88493c7e0764" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://saveuserDetailsflowtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://saveuserDetailsflowtest\mock_variable_2.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://saveuserDetailsflowtest\mock_variable_3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock save-userDetails-input" doc:id="50fb306f-51aa-4c26-8eaa-e2e072df61cd" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="009410b3-684c-444f-aa6b-0e258fa8abe9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://saveuserDetailsflowtest\mock_payload1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://saveuserDetailsflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://saveuserDetailsflowtest\mock_variable_4.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock save-userDetails-output" doc:id="77f8ff29-182c-4d25-8d9c-89673d7e2724" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f2821e67-0eed-40e0-ad99-0d4c045490c3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://saveuserDetailsflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://saveuserDetailsflowtest\mock_variable_5.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://saveuserDetailsflowtest\mock_variable_6.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="b3828bdb-9480-418a-b1c5-3e3c0fdccd82" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://saveuserDetailsflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://saveuserDetailsflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://saveuserDetailsflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to save-userDetails-flow" doc:id="09bc3395-f6ff-44df-958b-85387d128f8e" name="save-userDetails-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="ae8ffd11-5b32-4be4-a0b6-b7748b508038" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import saveuserDetailsflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify unique user ID" doc:id="8b5a2d21-af03-42a7-902f-6e23a85441c8" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="74981a58-2ed9-48bb-abcd-769e2b3da7b2" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="save-alertSubscription-flow-test" doc:id="04f9a0ed-5341-43e0-84e9-9f47c25b521e" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock save-alertSubscription-output" doc:id="15a936d9-52c1-4559-807f-a60eaec8618a" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6db74ab4-f9a9-47db-a507-a2b381985072" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://savealertSubscriptionflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://savealertSubscriptionflowtest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://savealertSubscriptionflowtest\mock_variable_1.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock alert subscription details" doc:id="86712576-0ce9-4cb3-887e-de2d9e635a06" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b10ad504-89a9-4a21-8862-215b71e86f2e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://savealertSubscriptionflowtest\mock_payload1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://savealertSubscriptionflowtest\mock_variable_2.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://savealertSubscriptionflowtest\mock_variable_3.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock Set Variable" doc:id="bd5c8ff6-a762-4965-a56d-92ec53bf83c9" processor="set-variable">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bfdd6ea8-0560-41ab-950e-25c38eb9247c" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://savealertSubscriptionflowtest\mock_variable_4.dwl')]" />
+						<munit-tools:variable key="userID" value="#[output application/json --- readUrl('classpath://savealertSubscriptionflowtest\mock_variable_5.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock save-alertSubscription-input" doc:id="105922bf-b67d-40ee-94c9-6401ce9d6f70" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2a98fa62-456f-4bac-9abd-32eb24b09d21" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://savealertSubscriptionflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://savealertSubscriptionflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://savealertSubscriptionflowtest\mock_variable_6.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="10ce1070-3c1b-426e-85ba-94261b854095" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://savealertSubscriptionflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://savealertSubscriptionflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://savealertSubscriptionflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to save-alertSubscription-flow" doc:id="630c3cf3-e557-4125-8408-50829b17c07b" name="save-alertSubscription-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="73b6c476-52ef-4372-90fe-e04780cb476b" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import savealertSubscriptionflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify unique subscription ID" doc:id="93fcf109-55fc-475f-b94e-03c0f6b01c14" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ecda8155-f0ab-4965-807a-865b8fc40935" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="save-alert-flow-test" doc:id="b499dd6c-4848-4cbe-be70-9cad7ac09b92" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock save-alert-input" doc:id="85343af3-0f2d-4387-a959-edba93d0a706" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="11c1da6b-cd04-4a56-af6b-35035cda0d20" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://savealertflowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://savealertflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://savealertflowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock train alerts" doc:id="0818e18b-41c9-4efe-8588-614c4c6b4412" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9a57c1a2-a0a3-4624-87b2-f2eda7ba8578" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://savealertflowtest\mock_payload1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://savealertflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock save-alert-output" doc:id="a2416df6-761a-4d56-9803-3e93ab7dbd13" processor="json-logger:logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="108329c5-5ad1-4f26-b66f-10eeea0ea28f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://savealertflowtest\mock_payload2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://savealertflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="057b1782-997d-48a0-bb7b-c3d438fb7a83" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://savealertflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://savealertflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://savealertflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to save-alert-flow" doc:id="266b3f2b-df02-433f-9d40-edc8100c370e" name="save-alert-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="afad9d80-d769-466a-b708-04dcb945c748" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import savealertflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify unique alert ID" doc:id="012f03f1-968f-4c77-98c8-98d2e7784c4c" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c2e155ab-73e4-4d29-bb59-4dc2db3ec9d2" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-subscriptions-subFlow-test" doc:id="b0d7da53-adfe-46fe-b147-8e0333706f7d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock All subscriptions" doc:id="7e7f7dca-f240-4bba-9fc6-11e951068fc0" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4c8aa805-f168-48a6-8157-52299b2dc839" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://retrievesubscriptionssubFlowtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionssubFlowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="dde8a353-12a6-48c4-9f5f-48eaf721890c" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionssubFlowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievesubscriptionssubFlowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionssubFlowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-subscriptions-subFlow" doc:id="55dba929-1942-4bda-a60d-9051b1236a9f" name="retrieve-subscriptions-subFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="8a1d360b-86e6-48d5-a49d-4f1744f2e72a" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievesubscriptionssubFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify subscriptions" doc:id="1e34b6e8-f7c3-499b-97e3-e8c4a5b467a2" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="943d2976-c0b3-4f16-be43-a47524c0c50d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-subscription-subFlow-test" doc:id="45eea933-928d-4d35-a277-b8784e1c394c" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock subscription with ID" doc:id="91263664-7182-4c8c-8569-48d27fab7187" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="641172a4-3d4e-4a66-9b8e-4b729d30a948" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://retrievesubscriptionsubFlowtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsubFlowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="b1d18b3b-48cf-45d7-8f15-eba08d535d78" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievesubscriptionsubFlowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievesubscriptionsubFlowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievesubscriptionsubFlowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-subscription-subFlow" doc:id="86716ac7-c660-4c8f-802a-1d4b5aa3c94f" name="retrieve-subscription-subFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="0c1a5f85-c465-4e85-867d-74cb8f355783" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievesubscriptionsubFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify subscription" doc:id="3a3ce235-06c6-4e53-88bb-c8bebc390396" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="f7916bc3-f1f6-46ac-8c21-a64b76c40cde" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-alerts-subFlow-test" doc:id="1f200651-c304-4d7e-aa92-12ebba63e7a4" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock All alerts" doc:id="e0fed6d0-a1c2-4874-88d9-113c6f230bd9" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c4867184-8daa-4ba2-a5a3-1d834fa58d32" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://retrievealertssubFlowtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertssubFlowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="6e0b7059-c68c-4dba-bb3d-2f0753d999c6" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievealertssubFlowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievealertssubFlowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertssubFlowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-alerts-subFlow" doc:id="e6da948a-5449-4597-982d-d98d458c6a61" name="retrieve-alerts-subFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="35e86c5e-46a3-44cd-b502-08c235ce6f53" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievealertssubFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify alerts" doc:id="ccf7d3d8-d603-4a81-9385-c1714f3fe9d5" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="aed3f0aa-0fe6-41f1-9aa5-335f1851be58" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="retrieve-alert-subFlow-test" doc:id="5091836c-550a-4b37-b908-4a2c734b4a69" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock alert with ID" doc:id="975bb862-7cdc-42f3-a935-7c09667a5d3c" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="80aed2fe-36f3-4e28-ac99-3664dd66c936" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://retrievealertsubFlowtest\mock_payload.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsubFlowtest\mock_variable_.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="c98fdcbc-3e0f-4261-aecc-4a03babf41f9" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://retrievealertsubFlowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://retrievealertsubFlowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://retrievealertsubFlowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to retrieve-alert-subFlow" doc:id="23dc15fe-815f-4a4a-9709-f612006bdb94" name="retrieve-alert-subFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="a9cb8718-af05-470e-9373-1acf16d44f92" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import retrievealertsubFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify alert" doc:id="5c9daa52-1f4d-4113-9486-7bfdd48c7754" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3a776338-13ac-4fdf-ba57-d10db8e4a61a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

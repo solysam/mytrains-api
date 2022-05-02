@@ -1,0 +1,16 @@
+%dw 2.0
+
+type auto_623efd3f_28a9_4e12_8b0e_ab2ef15ff919_Input_Payload = {
+  created: Any, 
+  from: String, 
+  startTime: Any, 
+  to: String, 
+  endTime: Any, 
+  subscriptionID?: Number, 
+  userID: String, 
+  advanceNotify: Number, 
+  updated: Any, 
+  status: Number, 
+  _?: Any
+}
+

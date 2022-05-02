@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_917612ad_0909_41c1_bd90_45f553da520c_Output_Payload = Array<{|  alertID: Number | Null,   subscriptionID: Number,   delayType: String,   notificationStatus: String,   notificationFailureDetail: String,   delayedBy: Number,   created: Any|}>
+

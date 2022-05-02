@@ -1,0 +1,9 @@
+%dw 2.0
+
+type auto_55a6d147_402d_460d_907b_f5d7016cb508_Input_Payload = {
+  "new password": String, 
+  "security answer": String, 
+  login: String, 
+  _?: Any
+}
+

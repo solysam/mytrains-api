@@ -1,0 +1,22 @@
+# Port (for HTTP listener)
+http:
+  port: "8083"                                                                     #port
+  host: "dev-32798618.okta.com"                                                    #host url
+  base: "/api/v1/"                                                                 #base url
+  register: "/users?activate=true"                                                 #register url
+  login: "/authn"                                                                  #login url
+  resetPassword: "users/{userID}/credentials/forgot_password?sendEmail=false"      #reset password url
+  Authorization: "![3yqjiUs08OO0qqSJdsGSVtaHa03/YRgccjaQQDCK0FFn9ZmXWr4PfLpyO9H3UU0h]"  #okta token
+
+# ServiceNow (for error ticket logging)
+servicenow:
+  user: "![rqaeoccloxk=]"
+  password: "![1XUL+be2z8HyArSt1noNeQ==]"
+  address: "https://dev107218.service-now.com/"
+
+# Json Logger (appended in Splunk)
+logger:
+  application.name: "mytrain-okta-sys-api"
+  application.version: "0.0"
+  env: "dev"
+  

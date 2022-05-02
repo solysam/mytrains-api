@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_5e6f5960_3225_40cc_8837_b27e551827fd_Output_Payload = Array<{|  userID: String,   subscriptionID: Number,   timeWindow: Number,   from: String,   to: String|}>
+

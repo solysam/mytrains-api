@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_46cd60eb_7d0d_4bde_85c6_416aa6a61af7_Input_Payload = Binary
+

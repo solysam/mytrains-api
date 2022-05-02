@@ -1,0 +1,12 @@
+%dw 2.0
+
+type auto_00e31739_dae4_4678_91c4_731ee60e2799_Output_Variables_alert_id = {|
+  alertID: Number | Null, 
+  subscriptionID: Number, 
+  delayType: String, 
+  notificationStatus: String, 
+  notificationFailureDetail: String, 
+  delayedBy: Number, 
+  created: Any
+|}
+

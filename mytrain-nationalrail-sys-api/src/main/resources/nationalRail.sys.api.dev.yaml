@@ -1,0 +1,19 @@
+# Port (for HTTP listener)
+http:
+  port: "8084"                                                
+
+# National Rail ( for SOAP web service request)
+soap:
+  token: "![i1TSm9vJXeGUH6ZSWa26g5eEWyCw+Gdf+MMRfAgD//e53fFmEKiIGA==]"
+
+# ServiceNow (for error ticket logging)
+servicenow:
+  user: "![rqaeoccloxk=]"
+  password: "![1XUL+be2z8HyArSt1noNeQ==]"
+  address: "https://dev107218.service-now.com/"
+
+# Json Logger (appended in Splunk)
+logger:
+  application.name: "mytrain-nationalrail-sys-api"
+  application.version: "0.0"
+  env: "dev"
